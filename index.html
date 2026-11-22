@@ -1,16 +1,209 @@
-<header>
-  <h1>邀请信写作复习</h1>
-  <nav>
-    <button data-view="map">学习地图</button>
-    <button data-view="sections">分步复习</button>
-    <button data-view="phrases">短语库</button>
-    <button data-view="quiz">联动自测</button>
-    <button data-view="wrong">错题本</button>
-  </nav>
-</header>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邀请信写作复习</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        details {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        summary {
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            color: #2980b9;
+            outline: none;
+            user-select: none;
+        }
+        summary:hover {
+            color: #1abc9c;
+        }
+        .content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+        .content p {
+            margin: 8px 0;
+        }
+        .en {
+            color: #c0392b;
+            font-weight: 500;
+        }
+        .zh {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .tag {
+            display: inline-block;
+            background: #ecf0f1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
 
-<main id="app"></main>
+    <h1>邀请信写作复习</h1>
 
-<script src="js/data.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/app.js"></script>
+    <details>
+        <summary>① 介绍自己</summary>
+        <div class="content">
+            <p><span class="en">I am Li Ming, a student from ____ and one of the organizers of this activity.</span></p>
+            <p class="zh">我是李明，来自____的学生，也是本次活动的组织者之一。</p>
+            <hr>
+            <p><span class="en">I am Li Ming, a student representative from ____.</span></p>
+            <p class="zh">我是李明，来自____的学生代表。</p>
+            <hr>
+            <p><span class="en">I am Li Ming, ____ of ____.</span></p>
+            <p class="zh">我是李明，____的____（如：主席/负责人）。</p>
+        </div>
+    </details>
+
+    <details>
+        <summary>② 写信目的 + 活动信息</summary>
+        <div class="content">
+            <p><b>写信目的：</b></p>
+            <p><span class="en">It is my great pleasure to invite you to our annual forum.</span></p>
+            <p><span class="en">On behalf of the Student Union, I would like to invite you to deliver a lecture.</span></p>
+            <hr>
+            <p><b>活动信息（时间/地点）：</b></p>
+            <p><span class="en">..., which will be held in the school auditorium at 2 p.m. on June 15th.</span></p>
+            <p><span class="en">in Meeting Room 201 at 3 p.m. next Friday</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>③ 活动价值（句式框架）</summary>
+        <div class="content">
+            <p><span class="en">The activity will provide you with a good opportunity to ______.</span></p>
+            <p><span class="en">The activity will enable you to ______.</span></p>
+            <p><span class="en">The activity will be a good chance for you to ______.</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>④ 适度恭维收信人</summary>
+        <div class="content">
+            <p><span class="en">As an expert in this field, you are widely respected by our students.</span></p>
+            <p><span class="en">With your rich experience in this area, you would be a most welcome guest.</span></p>
+            <p><span class="en">Your presence would be greatly appreciated.</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>⑤ 明确请求 + 截止时间</summary>
+        <div class="content">
+            <p><span class="en">We would be grateful if you could confirm your attendance before June 10th.</span></p>
+            <p><span class="en">Please let us know whether you can come by June 10th.</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>⑥ 客套话</summary>
+        <div class="content">
+            <p><span class="en">Should you have any questions, please do not hesitate to contact me.</span></p>
+            <p><span class="en">We look forward to welcoming you to our university.</span></p>
+            <p><span class="en">Thank you for your time and consideration.</span></p>
+            <p><span class="en">Thank you in advance for your support.</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>⑦ 期待回复</summary>
+        <div class="content">
+            <p><span class="en">Looking forward to your reply.</span></p>
+            <p><span class="en">We look forward to hearing from you soon.</span></p>
+        </div>
+    </details>
+
+    <details>
+        <summary>⑧ 活动类型短语库（配合第③部分使用）</summary>
+        <div class="content">
+            
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 学术交流类（会议/讲座/论坛）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">交流观点</span><span class="en">exchange ideas with other scholars</span></p>
+                    <p><span class="tag">分享研究</span><span class="en">share your research findings</span></p>
+                    <p><span class="tag">了解前沿</span><span class="en">learn about the latest developments in the field</span></p>
+                </div>
+            </details>
+
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 指导点评类（比赛/答辩/评审）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">指导年轻学生</span><span class="en">offer guidance to young students</span></p>
+                    <p><span class="tag">点评作品</span><span class="en">comment on their performances</span></p>
+                    <p><span class="tag">发现人才</span><span class="en">discover talented students</span></p>
+                </div>
+            </details>
+
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 社交拓展类（晚会/聚会/社团）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">结识新朋友</span><span class="en">make new friends</span></p>
+                    <p><span class="tag">扩大社交圈</span><span class="en">meet people with similar interests</span></p>
+                    <p><span class="tag">与师生交流</span><span class="en">communicate with our students and teachers</span></p>
+                </div>
+            </details>
+
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 放松娱乐类（晚会/典礼/庆祝）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">放松身心</span><span class="en">relax and enjoy yourself</span></p>
+                    <p><span class="tag">欣赏节目</span><span class="en">enjoy wonderful performances</span></p>
+                    <p><span class="tag">与学生同乐</span><span class="en">spend a pleasant evening with us</span></p>
+                </div>
+            </details>
+
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 展示分享类（讲座/经验分享/演讲）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">分享经验</span><span class="en">share your valuable experience</span></p>
+                    <p><span class="tag">发表见解</span><span class="en">present your ideas</span></p>
+                    <p><span class="tag">展示才华</span><span class="en">show your talent</span></p>
+                </div>
+            </details>
+
+            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
+                <summary style="font-size:1em; color:#8e44ad;">▶ 了解合作类（开放日/校企/学术会议）</summary>
+                <div style="padding-left: 15px; margin-top: 10px;">
+                    <p><span class="tag">了解学生</span><span class="en">learn more about our students</span></p>
+                    <p><span class="tag">促进合作</span><span class="en">promote cooperation with our university</span></p>
+                    <p><span class="tag">建立联系</span><span class="en">build closer ties with us</span></p>
+                </div>
+            </details>
+
+        </div>
+    </details>
+
+    <p style="text-align: center; color: #bdc3c7; font-size: 0.8em; margin-top: 40px;">
+        点击标题即可折叠 / 展开
+    </p>
+
+</body>
+</html>
