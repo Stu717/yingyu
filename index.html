@@ -6,456 +6,397 @@
 <title>邀请信写作 · 复习手册</title>
 <style>
   :root{
-    --bg:#f5f4f0; --card:#fff; --ink:#1b1c1a; --muted:#6c6d68;
-    --line:#e4e2dc; --accent:#0e7490; --soft:#e8f4f3;
-    --amber:#b45309; --amber-soft:#fdf3e3; --radius:14px;
+    --bg:#f7f6f2; --card:#fff; --ink:#1a1c1b; --muted:#6b6d68;
+    --line:#e5e3db; --accent:#0d6e6e; --soft:#e6f2f2;
+    --highlight:#fff3c4; --highlight-ink:#8a5a00;
+    --star:#f59e0b; --star-gray:#d1d5db;
+    --pill-bg:#f0f4f4; --pill-hover:#dcebea;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth; scroll-padding-top:78px}
   body{
     margin:0; background:var(--bg); color:var(--ink); line-height:1.65;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    -webkit-font-smoothing:antialiased;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
   }
-  .wrap{max-width:900px; margin:0 auto; padding:0 20px}
+  .wrap{max-width:800px; margin:0 auto; padding:0 20px}
+  
+  /* 顶部 */
+  .hero{padding:40px 0 20px}
+  .hero h1{font-size:26px; margin:0 0 8px}
+  .hero p{margin:0; color:var(--muted); font-size:14px}
+  
+  /* 工具栏 */
+  .toolbar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:20px;
+  }
+  .toggle-wrap{display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--muted)}
+  .toggle-wrap input{accent-color:var(--accent); width:16px; height:16px; margin:0}
 
-  /* ---------- 顶部 ---------- */
-  .hero{padding:44px 0 28px}
-  .eyebrow{
-    font-size:12px; letter-spacing:.18em; text-transform:uppercase;
-    color:var(--accent); font-weight:700; margin:0 0 8px;
+  /* 步骤卡片 */
+  details{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    margin-bottom:12px; overflow:hidden; transition:border-color .2s;
   }
-  .hero h1{font-size:28px; margin:0 0 10px; letter-spacing:.5px}
-  .lede{margin:0; color:var(--muted); font-size:14.5px; max-width:62ch}
-  .tools{margin-top:16px}
-  .switch{
-    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
-    font-size:13px; color:var(--muted); user-select:none;
-    background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 14px;
+  details[open]{border-color:#b0ccca; box-shadow:0 2px 8px rgba(0,0,0,.02)}
+  summary{
+    padding:16px 20px; cursor:pointer; list-style:none; display:flex; align-items:center;
+    font-weight:600; font-size:16px; user-select:none;
   }
-  .switch input{accent-color:var(--accent); margin:0}
-
-  /* ---------- 导航 ---------- */
-  .navbar{
-    position:sticky; top:0; z-index:50;
-    background:rgba(245,244,240,.92); backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
+  summary::-webkit-details-marker{display:none}
+  summary:before{
+    content:'+'; font-size:18px; color:var(--accent); margin-right:12px; font-weight:700;
+    transition:transform .2s;
   }
-  .navbar .wrap{display:flex; gap:8px; overflow-x:auto; padding:10px 20px; scrollbar-width:none}
-  .navbar .wrap::-webkit-scrollbar{display:none}
-  .navbar a{
-    flex:0 0 auto; font-size:13px; padding:6px 12px; border-radius:999px;
-    background:#fff; border:1px solid var(--line); color:var(--muted);
-    text-decoration:none; white-space:nowrap; transition:.15s;
+  details[open] summary:before{content:'−'; transform:rotate(180deg)}
+  .badge{
+    font-size:12px; color:var(--accent); background:var(--soft);
+    padding:2px 8px; border-radius:6px; margin-right:12px;
   }
-  .navbar a:hover{color:var(--accent); border-color:var(--accent); background:var(--soft)}
-
-  /* ---------- 卡片 ---------- */
-  main{padding-bottom:60px}
-  .card{
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:20px 22px; margin:16px 0; box-shadow:0 1px 2px rgba(0,0,0,.03);
+  
+  .content{padding:0 20px 20px 20px; border-top:1px solid var(--line); padding-top:16px}
+  .note{font-size:13.5px; color:var(--muted); margin:0 0 16px}
+  
+  /* 句子列表 */
+  .item{
+    display:flex; gap:12px; padding:10px 12px; border-radius:8px;
+    margin-bottom:8px; background:#faf9f6; align-items:flex-start;
+    transition:background .15s;
   }
-  .card-head{display:flex; align-items:center; gap:12px; margin-bottom:4px}
-  .num{
-    font-size:13px; font-weight:700; color:var(--accent); background:var(--soft);
-    border-radius:8px; padding:3px 9px; font-variant-numeric:tabular-nums;
-  }
-  .card h2{font-size:17px; margin:0; font-weight:700}
-  .note{font-size:13px; color:var(--muted); margin:6px 0 14px}
-
-  /* ---------- 句式行 ---------- */
-  .lines{display:flex; flex-direction:column; gap:8px}
-  .line{
-    display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;
-    padding:10px 12px; border-radius:10px; background:#faf9f6;
-    border:1px solid transparent; transition:.15s;
-  }
-  .line:hover{background:#fff; border-color:var(--line)}
-  .tag{
-    flex:0 0 auto; font-size:12px; color:var(--amber); background:var(--amber-soft);
-    border-radius:6px; padding:2px 8px; margin-top:3px; white-space:nowrap;
-  }
+  .item:hover{background:#fff; border:1px solid var(--line); padding:9px 11px}
+  
+  /* 标黄与填空逻辑 */
   .en{
-    flex:1 1 240px; min-width:0;
-    font-family:ui-serif,Georgia,"Times New Roman",serif;
-    font-size:15.5px; line-height:1.6; color:#22303a; word-break:break-word;
+    flex:1; font-family:ui-serif,Georgia,"Times New Roman",serif;
+    font-size:15.5px; color:#22303a; line-height:1.7;
   }
-  .copy{
-    flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--muted);
-    font-size:12px; padding:4px 10px; border-radius:8px; cursor:pointer;
-    font-family:inherit; transition:.15s;
+  .en mark{
+    background:var(--highlight); color:var(--highlight-ink);
+    padding:2px 4px; border-radius:4px; font-weight:500;
   }
-  .copy:hover{color:var(--accent); border-color:var(--accent); background:var(--soft)}
+  .en strong{ color:var(--accent); font-weight:700; }
+  
+  /* 新增：互动填空槽位 */
+  .blank-slot {
+    display: inline-block;
+    min-width: 80px;
+    padding: 2px 8px;
+    margin: 0 4px;
+    background: #fff;
+    border: 1.5px dashed #b0ccca;
+    border-radius: 6px;
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-align: center;
+    transition: all .2s;
+    position: relative;
+  }
+  .blank-slot:hover { background: var(--soft); border-color: var(--accent); }
+  .blank-slot.has-value { background: #eef7f6; border-style: solid; color: var(--accent); }
 
-  /* 遮挡自测 */
-  body.masked .line .en{filter:blur(5px); cursor:pointer; user-select:none; transition:filter .18s}
-  body.masked .line.revealed .en{filter:none}
-  body.masked .line{background:#fff}
+  /* 素材药丸库（内联在第3部分） */
+  .phrase-pool {
+    margin-top: 12px; padding: 12px; background: #f4f8f8;
+    border-radius: 8px; border: 1px solid #d0e3e1;
+    display: none; /* 默认隐藏，点击填空处显示 */
+  }
+  .phrase-pool.show { display: block; animation: fadeIn .2s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
+  .pool-title { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between;}
+  .pool-close { cursor: pointer; color: var(--accent); }
+  
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .pill-group:last-child { margin-bottom: 0; }
+  .pill-label { font-size: 12px; color: var(--amber); width: 100%; margin-bottom: -2px;}
+  .pill {
+    font-size: 13px; background: #fff; border: 1px solid #c5d8d7; padding: 4px 10px;
+    border-radius: 99px; cursor: pointer; color: #14534f; transition: .15s;
+    font-family: ui-serif,Georgia,serif;
+  }
+  .pill:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-  /* ---------- 素材库 ---------- */
-  .sec-head{margin:40px 0 4px}
-  .sec-head h2{font-size:19px; margin:0 0 6px}
-  .sec-head p{margin:0; font-size:13.5px; color:var(--muted)}
-  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); margin-top:16px}
-  .type{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px}
-  .type h3{margin:0 0 10px; font-size:15.5px; color:var(--accent)}
-  .meta{margin:0 0 6px; font-size:13px; color:var(--muted); line-height:1.6}
-  .meta b{color:var(--ink); font-weight:600; margin-right:6px}
-  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px}
-  .chip{
-    font-family:ui-serif,Georgia,"Times New Roman",serif;
-    font-size:13px; padding:5px 10px; border-radius:8px; cursor:pointer;
-    background:#f2f6f6; border:1px solid #d9e6e5; color:#14534f; transition:.15s;
+  /* 标签与收藏 */
+  .tag{
+    flex:0 0 auto; font-size:12px; color:var(--muted); background:#eae8e3;
+    padding:2px 8px; border-radius:4px; margin-top:3px; white-space:nowrap;
   }
-  .chip:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
-  .chip.active{background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,116,144,.15)}
+  .star-btn{
+    background:none; border:none; cursor:pointer; font-size:20px;
+    color:var(--star-gray); padding:0; margin-top:1px; transition:.15s; outline:none;
+  }
+  .star-btn:hover, .star-btn.active{color:var(--star)}
+  
+  /* 第8部分素材库 */
+  .grid{display:grid; gap:12px; grid-template-columns:1fr; margin-top:10px}
+  .type-box{background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px}
+  .type-box h3{margin:0 0 10px; font-size:15px; color:var(--accent); display:flex; align-items:center; justify-content:space-between}
+  .meta{font-size:13px; color:var(--muted); margin-bottom:8px}
+  
+  .phrase-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 10px; border-radius:6px; background:#faf9f6; margin-bottom:6px;
+  }
+  .phrase-item .en{font-size:14.5px; color:var(--accent); font-weight:600}
+  .btn-use { font-size: 12px; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 6px; cursor: pointer; margin-left: 8px;}
+  .btn-use:hover { background: var(--accent); color: #fff;}
 
-  /* ---------- 造句区 ---------- */
-  .builder{margin-top:34px; background:linear-gradient(180deg,#fbfdfd,#fff)}
-  .templates{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
-  .tpl{
-    font-family:ui-serif,Georgia,"Times New Roman",serif;
-    font-size:13.5px; padding:8px 12px; border-radius:10px; cursor:pointer;
-    background:#fff; border:1px solid var(--line); color:#33404a; transition:.15s; text-align:left;
-  }
-  .tpl:hover{border-color:var(--accent); color:var(--accent)}
-  .tpl.active{background:var(--accent); color:#fff; border-color:var(--accent)}
-  .result{
-    border:1px dashed #cfe0df; border-radius:12px; padding:16px 18px; background:#fff;
-  }
-  .placeholder{margin:0; color:var(--muted); font-size:13.5px}
-  .result-meta{font-size:12px; color:var(--amber); background:var(--amber-soft);
-    display:inline-block; padding:2px 9px; border-radius:6px; margin-bottom:10px}
-  .result-en{font-size:16px; margin-bottom:8px}
-  .result-cn{font-size:13px; color:var(--muted); margin-bottom:14px}
-  .result.pulse{animation:pulse .6s ease-out}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(14,116,144,.35)}100%{box-shadow:0 0 0 14px rgba(14,116,144,0)}}
-
-  /* ---------- 其他 ---------- */
-  footer{padding:0 0 50px; color:var(--muted); font-size:13px}
-  #toast{
-    position:fixed; left:50%; bottom:28px; transform:translate(-50%,16px);
-    background:#1b1c1a; color:#fff; font-size:13px; padding:8px 16px;
-    border-radius:999px; opacity:0; pointer-events:none; transition:.25s; z-index:99;
-  }
-  #toast.show{opacity:1; transform:translate(-50%,0)}
-
-  @media (max-width:520px){
-    .hero h1{font-size:23px}
-    .card{padding:16px}
-    .line{padding:9px 10px}
-  }
+  .is-hidden { display:none !important; }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">Invitation Letter</p>
+<div class="wrap">
+  <div class="hero">
     <h1>邀请信写作 · 复习手册</h1>
-    <p class="lede">七步写作流程 + 分类素材库 + 造句练习。点击任意英文句子即可复制；打开下方开关可遮住英文做自测。</p>
-    <div class="tools">
-      <label class="switch">
-        <input type="checkbox" id="maskToggle">
-        <span>遮挡英文自测</span>
-      </label>
-    </div>
+    <p>点击第 3 部分的 <span style="color:#0d6e6e; border:1px dashed #0d6e6e; padding:0 4px; border-radius:4px;">下划线空</span> 可直接选择素材，体验“骨架+血肉”的组装。</p>
   </div>
-</header>
 
-<nav class="navbar"><div class="wrap" id="navInner"></div></nav>
-
-<main class="wrap">
-  <div id="flow"></div>
-
-  <div class="sec-head" id="bank">
-    <h2>08 · 分类素材库</h2>
-    <p>按活动类型挑具体好处和动词短语，再回到第 03 部分的好处句式里填空。</p>
+  <div class="toolbar">
+    <label class="toggle-wrap">
+      <input type="checkbox" id="favToggle">
+      <span>只看我收藏的句子</span>
+    </label>
   </div>
-  <div class="grid" id="typeGrid"></div>
 
-  <section class="card builder" id="builder">
-    <div class="card-head"><span class="num">∑</span><h2>造句区：素材 × 句式</h2></div>
-    <p class="note">第 08 部分提供「说什么」，第 03 部分提供「怎么说」。先点句式，再点上面的短语，自动拼成完整句子。</p>
-    <div class="templates" id="templates"></div>
-    <div class="result" id="result"></div>
-  </section>
-</main>
-
-<footer class="wrap"><p>复习顺序：先读流程 → 再看素材库 → 最后在造句区练手。</p></footer>
-
-<div id="toast"></div>
+  <div id="stepsContainer"></div>
+  
+  <div style="margin-top:30px">
+    <details>
+      <summary><span class="badge">08</span> 分类素材库</summary>
+      <div class="content">
+        <p class="note">丰富的短语库。点击“套用”可直接将该短语填入第 03 部分。</p>
+        <div class="grid" id="bankGrid"></div>
+      </div>
+    </details>
+  </div>
+</div>
 
 <script>
-/* ===================== 数据 ===================== */
-const STEPS = [
+// 数据库（把第8部分的短语提取出来，供各处调用）
+const materialBank = {
+  '学术交流类': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments'],
+  '指导点评类': ['offer guidance to young students', 'comment on their performances', 'discover talented students'],
+  '社交拓展类': ['make new friends', 'meet people with similar interests', 'communicate with our students'],
+  '放松娱乐类': ['relax and enjoy yourself', 'enjoy wonderful performances', 'spend a pleasant evening'],
+  '展示分享类': ['share your valuable experience', 'present your ideas', 'show your talent']
+};
+
+// 步骤数据（注意第3部分的特殊占位符 {{slot}}）
+const stepsData = [
   {
-    nav:'1. 介绍自己',
-    title:'介绍自己',
-    note:'题目只给「你是李明」时，按收信对象选择身份句式；若没给身份，用「活动组织者」最稳妥。',
-    items:[
-      {tag:'活动组织者', en:'I am Li Ming, a student from ____ and one of the organizers of this activity.'},
-      {tag:'邀请老师/专家', en:'I am Li Ming, a student representative from ____.'},
-      {tag:'班级/社团/组委会', en:'I am Li Ming, ____ of ____.'},
-      {tag:'示例', en:'I am Li Ming, chairman of the Student Union.'},
-      {tag:'示例', en:'I am Li Ming, a graduate student from the School of Foreign Languages.'}
+    id: 's1', title: '介绍自己',
+    note: '题目只给“你是李明”时，按身份选择句式，黄色部分按需替换。',
+    items: [
+      { tag: '组织者', html: 'I am Li Ming, a student from <mark>____</mark> and one of the organizers of this activity.' },
+      { tag: '老师/专家', html: 'I am Li Ming, a student representative from <mark>____</mark>.' },
+      { tag: '示例', html: 'I am Li Ming, <mark>chairman of the Student Union</mark>.' }
     ]
   },
   {
-    nav:'2. 目的+时间地点',
-    title:'写信目的 + 活动时间地点性质',
-    note:'先用一句话点明邀请目的，再补活动类型与时间地点；两句可用 which 合并。',
-    items:[
-      {tag:'写信目的', en:'It is my great pleasure to invite you to our annual forum.'},
-      {tag:'写信目的', en:'On behalf of the Student Union, I would like to invite you to deliver a lecture.'},
-      {tag:'活动类型', en:'an English speech contest / an academic lecture / a cultural exchange activity / a graduation ceremony / a campus seminar'},
-      {tag:'时间地点', en:'in the school auditorium at 2 p.m. on June 15th'},
-      {tag:'时间地点', en:'in Meeting Room 201 at 3 p.m. next Friday'},
-      {tag:'时间地点', en:'in the conference hall on the morning of June 20th'},
-      {tag:'合并句式', en:'..., which will be held in the school auditorium at 2 p.m. on June 15th.'},
-      {tag:'合并句式', en:'..., an activity themed ...'}
+    id: 's2', title: '写信目的 + 活动信息',
+    note: '点明邀请目的，补充时间地点性质。',
+    items: [
+      { tag: '目的', html: 'It is my great pleasure to invite you to <mark>our annual forum</mark>.' },
+      { tag: '目的', html: 'On behalf of the Student Union, I would like to invite you to <mark>deliver a lecture</mark>.' },
+      { tag: '合并句', html: '<mark>..., which will be held in the school auditorium at 2 p.m. on June 15th.</mark>' }
     ]
   },
   {
-    nav:'3. 好处/价值',
-    title:'活动对收信人的好处 / 价值',
-    note:'本部分只给句式骨架，具体内容去第 08 部分按活动类型取。',
-    items:[
-      {tag:'好处句式', en:'The activity will provide you with a good opportunity to ...'},
-      {tag:'好处句式', en:'will enable you to ...'},
-      {tag:'好处句式', en:'will be a good chance for you to ...'},
-      {tag:'示例', en:'The activity will provide you with a good opportunity to exchange ideas with our students.'},
-      {tag:'示例', en:'Your participation will be of great benefit to our students.'}
+    id: 's3', title: '活动对收信人的好处', // 🔥 重点改造区
+    note: '点击下划线空格，会弹出素材库。体验如何把第 8 部分的短语装进句式。',
+    items: [
+      { 
+        tag: '好处', 
+        isSlot: true, 
+        html: 'The activity will <strong>provide you with a good opportunity</strong> to <span class="blank-slot" data-slot-id="slot1">选择素材 ▼</span>.' 
+      },
+      { 
+        tag: '好处', 
+        isSlot: true, 
+        html: 'The activity will <strong>enable you</strong> to <span class="blank-slot" data-slot-id="slot2">选择素材 ▼</span>.' 
+      }
     ]
   },
   {
-    nav:'4. 适度恭维',
-    title:'适度恭维收信人',
-    note:'放在好处之后、提出请求之前，一两句即可，不要堆砌。',
-    items:[
-      {tag:'恭维句式', en:'As an expert in this field, you are widely respected by our students.'},
-      {tag:'恭维句式', en:'With your rich experience in this area, you would be a most welcome guest.'},
-      {tag:'可替换', en:'As a highly respected scholar, ...'},
-      {tag:'可替换', en:'Your presence would be greatly appreciated.'}
+    id: 's4', title: '适度恭维收信人',
+    note: '一两句即可，表达对专家的尊重。',
+    items: [
+      { tag: '恭维', html: 'As <mark>an expert in this field</mark>, you are widely respected by our students.' },
+      { tag: '恭维', html: 'With <mark>your rich experience in this area</mark>, you would be a most welcome guest.' }
     ]
   },
   {
-    nav:'5. 请求+截止',
-    title:'明确请对方做什么 + 截止时间',
-    note:'请求要具体，并给出明确截止日期，别只写「欢迎参加」。',
-    items:[
-      {tag:'只邀请出席', en:'confirm your attendance before June 10th'},
-      {tag:'请对方发言', en:'give a short speech at the activity'},
-      {tag:'请对方准备', en:'prepare a brief introduction to ...'},
-      {tag:'请对方回复', en:'let us know whether you can come by June 10th'},
-      {tag:'完整句', en:'We would be grateful if you could confirm your attendance before June 10th.'},
-      {tag:'完整句', en:'Please let us know whether you can come by June 10th.'}
+    id: 's5', title: '明确请求 + 截止时间',
+    note: '请求要具体，截止时间明确。',
+    items: [
+      { tag: '请求', html: 'We would be grateful if you could <strong>confirm your attendance</strong> before <mark>June 10th</mark>.' },
+      { tag: '请求', html: 'Please <strong>let us know</strong> whether you can come by <mark>June 10th</mark>.' }
     ]
   },
   {
-    nav:'6. 客套话',
-    title:'客套话',
-    note:'提供联系方式或表达感谢，简短自然即可。',
-    items:[
-      {tag:'客套', en:'Should you have any questions, please do not hesitate to contact me.'},
-      {tag:'客套', en:'We look forward to welcoming you to our university.'},
-      {tag:'客套', en:'Thank you for your time and consideration.'},
-      {tag:'客套', en:'We would appreciate your kind reply.'},
-      {tag:'客套', en:'Thank you in advance for your support.'}
-    ]
-  },
-  {
-    nav:'7. 期待回复',
-    title:'期待回复',
-    note:'结尾固定收束句，与开头的邀请形成呼应。',
-    items:[
-      {tag:'结尾', en:'Looking forward to your reply.'},
-      {tag:'结尾', en:'We look forward to hearing from you soon.'}
+    id: 's6', title: '客套话 + 期待回复',
+    note: '收尾礼节，自然简洁。',
+    items: [
+      { tag: '客套', html: 'Should you have any questions, please do not hesitate to contact me.' },
+      { tag: '期待', html: 'Looking forward to your reply.' }
     ]
   }
 ];
 
-const TYPES = [
-  {name:'学术交流类', acts:'学术会议、讲座、论坛', perks:'交流观点、分享研究、了解前沿、结识同行',
-   phrases:['exchange ideas with other scholars','share your research findings','learn about the latest developments in the field','meet other experts']},
-  {name:'指导点评类', acts:'比赛、答辩、评审', perks:'指导年轻学生、点评作品、发现人才',
-   phrases:['offer guidance to young students','comment on their performances','discover talented students']},
-  {name:'社交拓展类', acts:'晚会、聚会、社团活动', perks:'结识新朋友、扩大社交圈、与师生交流',
-   phrases:['make new friends','meet people with similar interests','communicate with our students and teachers']},
-  {name:'放松娱乐类', acts:'晚会、典礼、庆祝活动', perks:'放松身心、欣赏节目、与学生同乐',
-   phrases:['relax and enjoy yourself','enjoy wonderful performances','spend a pleasant evening with us']},
-  {name:'展示分享类', acts:'讲座、经验分享会、演讲比赛', perks:'展示才华、分享经验、发表见解',
-   phrases:['share your valuable experience','present your ideas','show your talent']},
-  {name:'了解合作类', acts:'校园开放日、校企活动、学术会议', perks:'了解学生/学校、促进合作、建立联系',
-   phrases:['learn more about our students','promote cooperation with our university','build closer ties with us']}
-];
+let favorites = JSON.parse(localStorage.getItem('invitation_favs')) || {};
+let slotsValue = {}; // 记录填入了什么
 
-const TEMPLATES = [
-  {en:'The activity will provide you with a good opportunity to ____', cn:'……将为你提供绝佳机会去……'},
-  {en:'The activity will enable you to ____', cn:'……将使你能够……'},
-  {en:'The activity will be a good chance for you to ____', cn:'……将是你的好机会去……'},
-  {en:'We would be grateful if you could ____ before June 10th.', cn:'如果你能在 6 月 10 日前……，我们将不胜感激。'}
-];
-
-/* ===================== 工具 ===================== */
-const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const escAttr = s => esc(s).replace(/"/g,'&quot;');
-const $ = id => document.getElementById(id);
-
-let toastTimer;
-function toast(msg){
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+function saveFavs() {
+  localStorage.setItem('invitation_favs', JSON.stringify(favorites));
+  applyFilter();
 }
 
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-  }catch(e){
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try{ document.execCommand('copy'); }catch(_){}
-    ta.remove();
-  }
-  toast('已复制');
+function toggleStar(id) {
+  if (favorites[id]) delete favorites[id];
+  else favorites[id] = true;
+  saveFavs();
+  renderSteps();
+  renderBank();
 }
 
-/* ===================== 渲染：导航 ===================== */
-function renderNav(){
-  const items = STEPS.map((s,i)=>({id:'step-'+(i+1), label:s.nav}));
-  items.push({id:'bank', label:'08. 素材库'});
-  items.push({id:'builder', label:'造句区'});
-  $('navInner').innerHTML = items
-    .map(it => `<a href="#${it.id}">${esc(it.label)}</a>`)
-    .join('');
-}
+// 渲染步骤
+function renderSteps() {
+  const container = document.getElementById('stepsContainer');
+  container.innerHTML = stepsData.map(step => `
+    <details ${step.id === 's3' ? 'open' : ''}>
+      <summary><span class="badge">${step.id.slice(1)}</span> ${step.title}</summary>
+      <div class="content">
+        <p class="note">${step.note}</p>
+        ${step.items.map((item, idx) => {
+          const itemId = `${step.id}_${idx}`;
+          const isStarred = favorites[itemId];
+          
+          // 如果是第3部分的互动句型，加入素材池
+          let poolHTML = '';
+          if (item.isSlot) {
+            poolHTML = `
+              <div class="phrase-pool" id="pool-${itemId}">
+                <div class="pool-title"><span>选择一个短语填入：</span><span class="pool-close" onclick="closePool('${itemId}')">关闭</span></div>
+                ${Object.entries(materialBank).map(([cat, phrases]) => `
+                  <div class="pill-group">
+                    <span class="pill-label">${cat}</span>
+                    ${phrases.map(p => `<span class="pill" onclick="insertPhrase('${itemId}', '${p}')">${p}</span>`).join('')}
+                  </div>
+                `).join('')}
+              </div>
+            `;
+          }
 
-/* ===================== 渲染：七步流程 ===================== */
-function lineHTML(it){
-  const tag = it.tag ? `<span class="tag">${esc(it.tag)}</span>` : '';
-  return `<div class="line">
-      ${tag}
-      <span class="en">${esc(it.en)}</span>
-      <button class="copy" type="button">复制</button>
-    </div>`;
-}
-
-function renderSteps(){
-  $('flow').innerHTML = STEPS.map((s,i)=>`
-    <section class="card" id="step-${i+1}">
-      <div class="card-head">
-        <span class="num">${String(i+1).padStart(2,'0')}</span>
-        <h2>${esc(s.title)}</h2>
+          return `
+            <div class="item ${item.isSlot ? 'interactive-item' : ''}" data-id="${itemId}" id="item-${itemId}">
+              <span class="tag">${item.tag}</span>
+              <span class="en">${item.html}</span>
+              <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleStar('${itemId}')">${isStarred ? '★' : '☆'}</button>
+            </div>
+            ${poolHTML}
+          `;
+        }).join('')}
       </div>
-      ${s.note ? `<p class="note">${esc(s.note)}</p>` : ''}
-      <div class="lines">${s.items.map(lineHTML).join('')}</div>
-    </section>
+    </details>
   `).join('');
+  
+  // 绑定点击槽位事件
+  document.querySelectorAll('.blank-slot').forEach(slot => {
+    slot.addEventListener('click', function(e) {
+      const itemEl = this.closest('.item');
+      const poolId = 'pool-' + itemEl.dataset.id;
+      // 关闭其他所有池
+      document.querySelectorAll('.phrase-pool').forEach(p => { if(p.id !== poolId) p.classList.remove('show') });
+      document.getElementById(poolId).classList.toggle('show');
+    });
+  });
+  
+  applyFilter();
 }
 
-/* ===================== 渲染：素材库 ===================== */
-function renderTypes(){
-  $('typeGrid').innerHTML = TYPES.map(t=>`
-    <article class="type">
-      <h3>${esc(t.name)}</h3>
-      <p class="meta"><b>适用</b>${esc(t.acts)}</p>
-      <p class="meta"><b>可写好处</b>${esc(t.perks)}</p>
-      <div class="chips">
-        ${t.phrases.map(p=>`<button class="chip" type="button"
-            data-type="${escAttr(t.name)}" data-phrase="${escAttr(p)}">${esc(p)}</button>`).join('')}
-      </div>
-    </article>
+// 插入短语
+window.insertPhrase = function(itemId, phrase) {
+  const itemEl = document.getElementById('item-' + itemId);
+  const slot = itemEl.querySelector('.blank-slot');
+  slot.textContent = phrase;
+  slot.classList.add('has-value');
+  document.getElementById('pool-' + itemId).classList.remove('show');
+}
+
+window.closePool = function(itemId) {
+  document.getElementById('pool-' + itemId).classList.remove('show');
+}
+
+// 渲染第8部分素材库
+function renderBank() {
+  const grid = document.getElementById('bankGrid');
+  grid.innerHTML = Object.entries(materialBank).map(([cat, phrases], tIdx) => `
+    <div class="type-box">
+      <h3>${cat}</h3>
+      ${phrases.map((phrase, pIdx) => {
+        const itemId = `bank_${tIdx}_${pIdx}`;
+        const isStarred = favorites[itemId];
+        return `
+          <div class="phrase-item" data-id="${itemId}">
+            <div style="flex:1;">
+              <span class="en">${phrase}</span>
+            </div>
+            <div style="display:flex; align-items:center;">
+              <button class="btn-use" onclick="useInStep3('${phrase}')">套用</button>
+              <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleStar('${itemId}')">${isStarred ? '★' : '☆'}</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
   `).join('');
+  applyFilter();
 }
 
-/* ===================== 渲染：造句区 ===================== */
-const state = { tplIndex:0, phrase:'', typeName:'' };
-
-function renderTemplates(){
-  $('templates').innerHTML = TEMPLATES.map((t,i)=>`
-    <button class="tpl${i===state.tplIndex?' active':''}" type="button" data-i="${i}">${esc(t.en)}</button>
-  `).join('');
+// 从第8部分快捷套用到第3部分
+window.useInStep3 = function(phrase) {
+  // 默认填入 slot1 (provide opportunity 句式)
+  const itemId = 's3_0'; 
+  const itemEl = document.getElementById('item-' + itemId);
+  const slot = itemEl.querySelector('.blank-slot');
+  slot.textContent = phrase;
+  slot.classList.add('has-value');
+  
+  // 视觉反馈：滚动并闪烁
+  const details = document.getElementById('step-s3').closest('details');
+  details.open = true;
+  document.getElementById('step-s3').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  
+  const itemBg = itemEl.style.background;
+  itemEl.style.background = '#fff3c4';
+  setTimeout(() => { itemEl.style.background = itemBg || '#faf9f6'; }, 800);
 }
 
-function renderResult(){
-  const box = $('result');
-  if(!state.phrase){
-    box.innerHTML = `<p class="placeholder">还没选短语 —— 点上方素材库里的任意动词短语试试。</p>`;
-    return;
-  }
-  const tpl = TEMPLATES[state.tplIndex];
-  let sentence = tpl.en.includes('____') ? tpl.en.replace('____', state.phrase) : tpl.en + ' ' + state.phrase;
-  if(!/[.!?]$/.test(sentence)) sentence += '.';
-
-  box.innerHTML = `
-    <span class="result-meta">来自「${esc(state.typeName)}」</span>
-    <div class="result-en en">${esc(sentence)}</div>
-    <div class="result-cn">${esc(tpl.cn)}</div>
-    <button class="copy" type="button">复制句子</button>
-  `;
-  box.classList.remove('pulse');
-  void box.offsetWidth;
-  box.classList.add('pulse');
+// 过滤逻辑
+function applyFilter() {
+  const showOnlyFav = document.getElementById('favToggle').checked;
+  const items = document.querySelectorAll('.item, .phrase-item');
+  
+  items.forEach(el => {
+    const id = el.getAttribute('data-id');
+    if (showOnlyFav && !favorites[id]) el.classList.add('is-hidden');
+    else el.classList.remove('is-hidden');
+  });
+  
+  document.querySelectorAll('details').forEach(details => {
+    if (showOnlyFav) {
+      const hasVisible = details.querySelector('.item:not(.is-hidden), .phrase-item:not(.is-hidden)');
+      details.open = !!hasVisible;
+    }
+  });
 }
 
-/* ===================== 事件 ===================== */
-document.addEventListener('click', async (e) => {
-  // 复制
-  const copyBtn = e.target.closest('.copy');
-  if(copyBtn){
-    const scope = copyBtn.closest('.line, .result');
-    const target = scope && scope.querySelector('.en');
-    if(target) await copyText(target.textContent.trim());
-    return;
-  }
+document.getElementById('favToggle').addEventListener('change', applyFilter);
 
-  // 遮挡模式下的点击揭示
-  const line = e.target.closest('.line');
-  if(line && document.body.classList.contains('masked')){
-    line.classList.toggle('revealed');
-    return;
-  }
-
-  // 点击短语
-  const chip = e.target.closest('.chip');
-  if(chip){
-    document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    state.phrase = chip.dataset.phrase;
-    state.typeName = chip.dataset.type;
-    renderResult();
-    return;
-  }
-
-  // 点击句式模板
-  const tpl = e.target.closest('.tpl');
-  if(tpl){
-    state.tplIndex = Number(tpl.dataset.i);
-    renderTemplates();
-    renderResult();
-  }
-});
-
-$('maskToggle').addEventListener('change', (e)=>{
-  document.body.classList.toggle('masked', e.target.checked);
-  document.querySelectorAll('.line.revealed').forEach(el=>el.classList.remove('revealed'));
-  if(e.target.checked) toast('已遮挡：点击句子查看答案');
-});
-
-/* ===================== 启动 ===================== */
-renderNav();
+// 启动
 renderSteps();
-renderTypes();
-renderTemplates();
-renderResult();
+renderBank();
 </script>
 </body>
 </html>
