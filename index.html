@@ -10,6 +10,7 @@
     --line:#e5e3db; --accent:#0d6e6e; --soft:#e6f2f2;
     --highlight:#fff3c4; --highlight-ink:#8a5a00;
     --star:#f59e0b; --star-gray:#d1d5db;
+    --blur-amt: 4px;
   }
   *{box-sizing:border-box}
   body{
@@ -27,7 +28,7 @@
   
   /* 工具栏 */
   .toolbar{
-    display:flex; justify-content:space-between; align-items:center;
+    display:flex; flex-wrap:wrap; gap:16px;
     padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:20px;
   }
   .toggle-wrap{display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:var(--muted)}
@@ -69,10 +70,16 @@
   .en{
     flex:1; font-family:ui-serif,Georgia,"Times New Roman",serif;
     font-size:15.5px; color:#22303a; line-height:2.2; word-break: break-word;
+    transition: filter .2s;
   }
   .en strong { color: var(--accent); font-weight: 700; }
   
-  /* 黄色虚线槽位 (替代原生 select) */
+  /* 模糊自测逻辑 */
+  body.masked .en { filter: blur(var(--blur-amt)); cursor: help; }
+  body.masked .en:hover, body.masked .en.revealed { filter: none; cursor: text; }
+  body.masked .blank-slot { filter: none !important; } /* 下拉框保持清晰 */
+
+  /* 黄色虚线槽位 */
   .blank-slot {
     display: inline-block;
     min-width: 60px;
@@ -115,11 +122,34 @@
   .pill-group:last-child { margin-bottom: 0; }
   .pill-label { font-size: 12px; color: var(--muted); width: 100%; margin-bottom: -2px; font-weight: bold;}
   .pill {
+    display: inline-flex; align-items: center; gap: 6px;
     font-size: 13px; background: #fff; border: 1px solid #c5d8d7; padding: 4px 10px;
     border-radius: 99px; cursor: pointer; color: #14534f; transition: .15s;
     font-family: ui-serif,Georgia,serif;
   }
   .pill:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  
+  /* 自定义删除小叉 */
+  .pill-del {
+    color: #999; font-size: 14px; font-weight: bold; line-height: 1;
+    padding: 0 4px; border-radius: 50%;
+  }
+  .pill-del:hover { color: #d32f2f; background: rgba(0,0,0,0.1); }
+
+  /* 自定义输入表单 */
+  .custom-form {
+    display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #d0e3e1;
+  }
+  .custom-input {
+    flex: 1; border: 1px solid #c5d8d7; border-radius: 6px; padding: 6px 10px;
+    font-size: 13px; font-family: inherit; outline: none; transition: border .2s;
+  }
+  .custom-input:focus { border-color: var(--accent); }
+  .custom-btn {
+    background: var(--accent); color: #fff; border: none; border-radius: 6px;
+    padding: 0 14px; cursor: pointer; font-size: 13px; transition: background .2s;
+  }
+  .custom-btn:hover { background: #0a5555; }
 
   /* 标签与收藏 */
   .tag{
@@ -143,8 +173,6 @@
     padding:8px 10px; border-radius:6px; background:#faf9f6; margin-bottom:6px;
   }
   .phrase-item .en{font-size:14.5px; color:var(--accent); font-weight:700; line-height:1.4;}
-  .btn-use { font-size: 12px; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 6px; cursor: pointer; margin-left: 8px; white-space: nowrap;}
-  .btn-use:hover { background: var(--accent); color: #fff;}
 
   .is-hidden { display:none !important; }
 </style>
@@ -155,7 +183,7 @@
   <div class="hero">
     <h1>邀请信写作 · 复习手册</h1>
     <p>
-      <mark>黄色虚线框</mark>为需替换词汇（点击弹出素材）；<br>
+      <mark>黄色虚线框</mark>为需替换词汇（点击弹出面板，支持自定义）；<br>
       <strong>青色加粗</strong>为背诵时要抓住的核心动词搭配。
     </p>
   </div>
@@ -165,6 +193,10 @@
       <input type="checkbox" id="favToggle">
       <span>只看我收藏的句子</span>
     </label>
+    <label class="toggle-wrap">
+      <input type="checkbox" id="maskToggle">
+      <span>开启模糊自测 (悬浮或点击清晰)</span>
+    </label>
   </div>
 
   <div id="stepsContainer"></div>
@@ -173,7 +205,7 @@
     <details>
       <summary><span class="badge">08</span> 分类素材库</summary>
       <div class="content">
-        <p class="note">点击“套用”，会自动填入上方<b>最近一次点击</b>的黄色虚线框中。</p>
+        <p class="note">核心短语库，可直接复习或收藏。</p>
         <div class="grid" id="bankGrid"></div>
       </div>
     </details>
@@ -184,7 +216,8 @@
 // 记录最后点击的槽位
 let lastFocusedSlot = null;
 
-const bankSec8 = {
+// 默认基础素材
+const defaultBank = {
   '学术交流类': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments in the field', 'meet other experts'],
   '指导点评类': ['offer guidance to young students', 'comment on their performances', 'discover talented students'],
   '社交拓展类': ['make new friends', 'meet people with similar interests', 'communicate with our students and teachers'],
@@ -193,47 +226,71 @@ const bankSec8 = {
   '了解合作类': ['learn more about our students', 'promote cooperation with our university', 'build closer ties with us']
 };
 
-const poolData = {
+const defaultPool = {
   'activity': ['an English speech contest', 'an academic lecture', 'a cultural exchange activity', 'a graduation ceremony', 'a campus seminar'],
   'location': ['in the school auditorium at 2 p.m. on June 15th', 'in Meeting Room 201 at 3 p.m. next Friday', 'in the conference hall on the morning of June 20th'],
-  'benefit': Object.values(bankSec8).flat(),
   'action': ['confirm your attendance', 'give a short speech at the activity', 'prepare a brief introduction to...'],
   'deadline': ['June 10th', 'next Friday'],
   'department': ['the School of Foreign Languages', 'the School of Economics'],
   'role': ['chairman', 'president']
 };
 
-// 根据类型生成面板 HTML
+// 读取自定义数据
+let customPoolData = JSON.parse(localStorage.getItem('custom_pool_data')) || {};
+
+// 保存自定义数据
+function saveCustomData() {
+  localStorage.setItem('custom_pool_data', JSON.stringify(customPoolData));
+}
+
+// 根据类型生成面板 HTML (融合自定义数据)
 function getPoolHTML(type) {
   let title = '选择素材';
   let groups = [];
   
   if (type === 'activity') {
-    title = '活动类型'; groups = [{ name: '可选活动', items: poolData.activity }];
+    title = '活动类型'; groups = [{ name: '可选活动', items: defaultPool.activity }];
   } else if (type === 'location') {
-    title = '时间地点'; groups = [{ name: '可选时间地点', items: poolData.location }];
+    title = '时间地点'; groups = [{ name: '可选时间地点', items: defaultPool.location }];
   } else if (type === 'benefit') {
     title = '第8部分 · 好处素材库';
-    groups = Object.entries(bankSec8).map(([k, v]) => ({ name: k, items: v }));
+    groups = Object.entries(defaultBank).map(([k, v]) => ({ name: k, items: v }));
   } else if (type === 'action') {
-    title = '请求动作'; groups = [{ name: '具体动作', items: poolData.action }];
+    title = '请求动作'; groups = [{ name: '具体动作', items: defaultPool.action }];
   } else if (type === 'deadline') {
-    title = '截止时间'; groups = [{ name: '时间', items: poolData.deadline }];
+    title = '截止时间'; groups = [{ name: '时间', items: defaultPool.deadline }];
   } else if (type === 'department') {
-    title = '院系'; groups = [{ name: '院系', items: poolData.department }];
+    title = '院系'; groups = [{ name: '院系', items: defaultPool.department }];
   } else if (type === 'role') {
-    title = '职务'; groups = [{ name: '职务', items: poolData.role }];
+    title = '职务'; groups = [{ name: '职务', items: defaultPool.role }];
   }
 
-  let html = `<div class="pool-title"><span>${title} (点击下方填选)</span><span class="pool-close">关闭面板</span></div>`;
+  // 检查是否有自定义数据并加入分组
+  if (customPoolData[type] && customPoolData[type].length > 0) {
+    groups.push({ name: '自定义补充', items: customPoolData[type], isCustom: true });
+  }
+
+  let html = `<div class="pool-title"><span>${title}</span><span class="pool-close">关闭面板</span></div>`;
+  
   groups.forEach(g => {
     html += `<div class="pill-group"><span class="pill-label">${g.name}</span>`;
     g.items.forEach(item => {
-      // 用 data-value 存值防引号截断
-      html += `<span class="pill" data-value="${item.replace(/"/g, '&quot;')}">${item}</span>`;
+      const safeVal = item.replace(/"/g, '&quot;');
+      // 如果是自定义分组，增加删除按钮
+      const delBtn = g.isCustom ? `<span class="pill-del" data-type="${type}" data-val="${safeVal}" title="删除该词条">×</span>` : '';
+      html += `<span class="pill" data-value="${safeVal}">${item} ${delBtn}</span>`;
     });
     html += `</div>`;
   });
+
+  // 底部加入自定义输入框
+  html += `
+    <form class="custom-form" data-type="${type}">
+      <input type="text" class="custom-input" placeholder="输入想要补充的短语，按回车添加..." required>
+      <button type="submit" class="custom-btn">添加</button>
+    </form>
+  `;
+
   return html;
 }
 
@@ -243,7 +300,7 @@ const slot = (type, defaultText) => `<span class="blank-slot" data-pool="${type}
 const stepsData = [
   {
     id: 's1', title: '介绍自己',
-    note: '根据收信人身份，选择对应句式（带下划线处可点击替换）。',
+    note: '根据收信人身份，选择对应句式。',
     items: [
       { tag: '组织者', html: `I am Li Ming, a student from ${slot('department', '院系')} and <strong>one of the organizers</strong> of this activity.` },
       { tag: '邀请老师', html: `I am Li Ming, a <strong>student representative</strong> from ${slot('department', '院系')}.` },
@@ -331,7 +388,7 @@ function renderSteps() {
           return `
             <div class="item" id="item-${itemId}">
               <span class="tag">${item.tag}</span>
-              <span class="en">${item.html}</span>
+              <span class="en" onclick="toggleReveal(this)">${item.html}</span>
               <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
             </div>
             ${hasSlot ? `<div class="phrase-pool" id="pool-${itemId}"></div>` : ''}
@@ -345,23 +402,19 @@ function renderSteps() {
 
 function renderBank() {
   const grid = document.getElementById('bankGrid');
-  grid.innerHTML = Object.entries(bankSec8).map(([cat, phrases], tIdx) => `
+  grid.innerHTML = Object.entries(defaultBank).map(([cat, phrases], tIdx) => `
     <div class="type-box">
       <h3>${cat}</h3>
       ${phrases.map((phrase, pIdx) => {
         const itemId = `bank_${tIdx}_${pIdx}`;
         const isStarred = favorites[itemId] ? 'active' : '';
         const starChar = favorites[itemId] ? '★' : '☆';
-        const safePhrase = phrase.replace(/"/g, '&quot;');
         return `
           <div class="phrase-item" id="item-${itemId}">
             <div style="flex:1;">
-              <span class="en">${phrase}</span>
+              <span class="en" onclick="toggleReveal(this)">${phrase}</span>
             </div>
-            <div style="display:flex; align-items:center;">
-              <button class="btn-use" data-phrase="${safePhrase}">套用</button>
-              <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
-            </div>
+            <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
           </div>
         `;
       }).join('')}
@@ -370,7 +423,14 @@ function renderBank() {
   applyFilter();
 }
 
-// 统一的点击事件管理
+// 模糊状态下点击解锁（移动端友好）
+window.toggleReveal = function(el) {
+  if (document.body.classList.contains('masked')) {
+    el.classList.toggle('revealed');
+  }
+};
+
+// 统一事件管理
 document.addEventListener('click', function(e) {
   // 1. 处理收藏
   const starBtn = e.target.closest('.star-btn');
@@ -396,74 +456,98 @@ document.addEventListener('click', function(e) {
     e.stopPropagation();
     lastFocusedSlot = slot;
     const item = slot.closest('.item');
-    const pool = item.nextElementSibling; // 获取紧跟在 item 后面的 pool
+    const pool = item.nextElementSibling;
 
-    // 如果点击的是当前已展开的面板，则收起
     if (pool.classList.contains('show')) {
       pool.classList.remove('show');
       return;
     }
 
-    // 收起其他面板
     document.querySelectorAll('.phrase-pool').forEach(p => p.classList.remove('show'));
-
-    // 渲染并显示当前面板
     const type = slot.getAttribute('data-pool');
     pool.innerHTML = getPoolHTML(type);
     pool.classList.add('show');
     return;
   }
 
-  // 3. 点击面板内的药丸选项 -> 填入
+  // 3. 点击药丸选项填入
   const pill = e.target.closest('.pill');
-  if (pill) {
+  if (pill && !e.target.classList.contains('pill-del')) {
     e.stopPropagation();
     const val = pill.getAttribute('data-value');
     if (lastFocusedSlot) {
       lastFocusedSlot.textContent = val;
       lastFocusedSlot.classList.add('has-value');
-      lastFocusedSlot.closest('.item').nextElementSibling.classList.remove('show'); // 关闭面板
+      lastFocusedSlot.closest('.item').nextElementSibling.classList.remove('show');
     }
     return;
   }
 
-  // 4. 点击关闭面板
+  // 4. 删除自定义词条
+  const delBtn = e.target.closest('.pill-del');
+  if (delBtn) {
+    e.stopPropagation();
+    const type = delBtn.dataset.type;
+    const val = delBtn.dataset.val;
+    if (customPoolData[type]) {
+      customPoolData[type] = customPoolData[type].filter(item => item !== val);
+      if (customPoolData[type].length === 0) delete customPoolData[type];
+      saveCustomData();
+      
+      // 重新渲染当前展开的面板
+      if(lastFocusedSlot) {
+        const pool = lastFocusedSlot.closest('.item').nextElementSibling;
+        pool.innerHTML = getPoolHTML(type);
+      }
+    }
+    return;
+  }
+
+  // 5. 关闭面板
   if (e.target.classList.contains('pool-close')) {
     e.stopPropagation();
     e.target.closest('.phrase-pool').classList.remove('show');
     return;
   }
 
-  // 5. 点击空白处关闭所有面板
+  // 6. 点击空白处关闭所有面板
   if (!e.target.closest('.phrase-pool')) {
     document.querySelectorAll('.phrase-pool').forEach(p => p.classList.remove('show'));
   }
+});
 
-  // 6. 处理第8部分“套用”
-  const useBtn = e.target.closest('.btn-use');
-  if (useBtn) {
-    const phrase = useBtn.getAttribute('data-phrase');
-    let target = lastFocusedSlot;
-
-    // 如果最后点的不在 benefit 框，或者没点过，默认找第一个 benefit 框
-    if (!target || target.getAttribute('data-pool') !== 'benefit' || target.closest('.is-hidden')) {
-      target = document.querySelector('.blank-slot[data-pool="benefit"]');
-    }
+// 监听表单提交（添加自定义词汇）
+document.addEventListener('submit', function(e) {
+  if (e.target.classList.contains('custom-form')) {
+    e.preventDefault();
+    const form = e.target;
+    const type = form.getAttribute('data-type');
+    const input = form.querySelector('.custom-input');
+    const val = input.value.trim();
     
-    if (target) {
-      target.textContent = phrase;
-      target.classList.add('has-value');
+    if (val) {
+      if (!customPoolData[type]) customPoolData[type] = [];
+      // 防重复
+      if (!customPoolData[type].includes(val) && !(defaultPool[type] && defaultPool[type].includes(val))) {
+        customPoolData[type].push(val);
+        saveCustomData();
+      }
       
-      const targetItem = target.closest('.item');
-      const details = targetItem.closest('details');
-      if (details && !details.open) details.open = true;
-      
-      targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      targetItem.style.transition = 'background 0.3s';
-      targetItem.style.background = '#fff3c4';
-      setTimeout(() => { targetItem.style.background = ''; }, 800);
+      // 重新渲染面板并清空输入框
+      if(lastFocusedSlot) {
+        const pool = lastFocusedSlot.closest('.item').nextElementSibling;
+        pool.innerHTML = getPoolHTML(type);
+      }
     }
+  }
+});
+
+// 顶部开关逻辑
+document.getElementById('maskToggle').addEventListener('change', function(e) {
+  document.body.classList.toggle('masked', e.target.checked);
+  // 关闭时清除所有已解锁状态
+  if (!e.target.checked) {
+    document.querySelectorAll('.revealed').forEach(el => el.classList.remove('revealed'));
   }
 });
 
@@ -487,6 +571,7 @@ function applyFilter() {
 
 document.getElementById('favToggle').addEventListener('change', applyFilter);
 
+// 初始化
 renderSteps();
 renderBank();
 </script>
