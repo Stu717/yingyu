@@ -1,209 +1,461 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>邀请信写作复习</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        details {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        summary {
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            color: #2980b9;
-            outline: none;
-            user-select: none;
-        }
-        summary:hover {
-            color: #1abc9c;
-        }
-        .content {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #eee;
-        }
-        .content p {
-            margin: 8px 0;
-        }
-        .en {
-            color: #c0392b;
-            font-weight: 500;
-        }
-        .zh {
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
-        .tag {
-            display: inline-block;
-            background: #ecf0f1;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>邀请信写作 · 复习手册</title>
+<style>
+  :root{
+    --bg:#f5f4f0; --card:#fff; --ink:#1b1c1a; --muted:#6c6d68;
+    --line:#e4e2dc; --accent:#0e7490; --soft:#e8f4f3;
+    --amber:#b45309; --amber-soft:#fdf3e3; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:78px}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); line-height:1.65;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:0 20px}
+
+  /* ---------- 顶部 ---------- */
+  .hero{padding:44px 0 28px}
+  .eyebrow{
+    font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin:0 0 8px;
+  }
+  .hero h1{font-size:28px; margin:0 0 10px; letter-spacing:.5px}
+  .lede{margin:0; color:var(--muted); font-size:14.5px; max-width:62ch}
+  .tools{margin-top:16px}
+  .switch{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+    font-size:13px; color:var(--muted); user-select:none;
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 14px;
+  }
+  .switch input{accent-color:var(--accent); margin:0}
+
+  /* ---------- 导航 ---------- */
+  .navbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(245,244,240,.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar .wrap{display:flex; gap:8px; overflow-x:auto; padding:10px 20px; scrollbar-width:none}
+  .navbar .wrap::-webkit-scrollbar{display:none}
+  .navbar a{
+    flex:0 0 auto; font-size:13px; padding:6px 12px; border-radius:999px;
+    background:#fff; border:1px solid var(--line); color:var(--muted);
+    text-decoration:none; white-space:nowrap; transition:.15s;
+  }
+  .navbar a:hover{color:var(--accent); border-color:var(--accent); background:var(--soft)}
+
+  /* ---------- 卡片 ---------- */
+  main{padding-bottom:60px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 22px; margin:16px 0; box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card-head{display:flex; align-items:center; gap:12px; margin-bottom:4px}
+  .num{
+    font-size:13px; font-weight:700; color:var(--accent); background:var(--soft);
+    border-radius:8px; padding:3px 9px; font-variant-numeric:tabular-nums;
+  }
+  .card h2{font-size:17px; margin:0; font-weight:700}
+  .note{font-size:13px; color:var(--muted); margin:6px 0 14px}
+
+  /* ---------- 句式行 ---------- */
+  .lines{display:flex; flex-direction:column; gap:8px}
+  .line{
+    display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap;
+    padding:10px 12px; border-radius:10px; background:#faf9f6;
+    border:1px solid transparent; transition:.15s;
+  }
+  .line:hover{background:#fff; border-color:var(--line)}
+  .tag{
+    flex:0 0 auto; font-size:12px; color:var(--amber); background:var(--amber-soft);
+    border-radius:6px; padding:2px 8px; margin-top:3px; white-space:nowrap;
+  }
+  .en{
+    flex:1 1 240px; min-width:0;
+    font-family:ui-serif,Georgia,"Times New Roman",serif;
+    font-size:15.5px; line-height:1.6; color:#22303a; word-break:break-word;
+  }
+  .copy{
+    flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--muted);
+    font-size:12px; padding:4px 10px; border-radius:8px; cursor:pointer;
+    font-family:inherit; transition:.15s;
+  }
+  .copy:hover{color:var(--accent); border-color:var(--accent); background:var(--soft)}
+
+  /* 遮挡自测 */
+  body.masked .line .en{filter:blur(5px); cursor:pointer; user-select:none; transition:filter .18s}
+  body.masked .line.revealed .en{filter:none}
+  body.masked .line{background:#fff}
+
+  /* ---------- 素材库 ---------- */
+  .sec-head{margin:40px 0 4px}
+  .sec-head h2{font-size:19px; margin:0 0 6px}
+  .sec-head p{margin:0; font-size:13.5px; color:var(--muted)}
+  .grid{display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); margin-top:16px}
+  .type{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px}
+  .type h3{margin:0 0 10px; font-size:15.5px; color:var(--accent)}
+  .meta{margin:0 0 6px; font-size:13px; color:var(--muted); line-height:1.6}
+  .meta b{color:var(--ink); font-weight:600; margin-right:6px}
+  .chips{display:flex; flex-wrap:wrap; gap:7px; margin-top:12px}
+  .chip{
+    font-family:ui-serif,Georgia,"Times New Roman",serif;
+    font-size:13px; padding:5px 10px; border-radius:8px; cursor:pointer;
+    background:#f2f6f6; border:1px solid #d9e6e5; color:#14534f; transition:.15s;
+  }
+  .chip:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .chip.active{background:var(--accent); color:#fff; border-color:var(--accent); box-shadow:0 0 0 3px rgba(14,116,144,.15)}
+
+  /* ---------- 造句区 ---------- */
+  .builder{margin-top:34px; background:linear-gradient(180deg,#fbfdfd,#fff)}
+  .templates{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px}
+  .tpl{
+    font-family:ui-serif,Georgia,"Times New Roman",serif;
+    font-size:13.5px; padding:8px 12px; border-radius:10px; cursor:pointer;
+    background:#fff; border:1px solid var(--line); color:#33404a; transition:.15s; text-align:left;
+  }
+  .tpl:hover{border-color:var(--accent); color:var(--accent)}
+  .tpl.active{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .result{
+    border:1px dashed #cfe0df; border-radius:12px; padding:16px 18px; background:#fff;
+  }
+  .placeholder{margin:0; color:var(--muted); font-size:13.5px}
+  .result-meta{font-size:12px; color:var(--amber); background:var(--amber-soft);
+    display:inline-block; padding:2px 9px; border-radius:6px; margin-bottom:10px}
+  .result-en{font-size:16px; margin-bottom:8px}
+  .result-cn{font-size:13px; color:var(--muted); margin-bottom:14px}
+  .result.pulse{animation:pulse .6s ease-out}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(14,116,144,.35)}100%{box-shadow:0 0 0 14px rgba(14,116,144,0)}}
+
+  /* ---------- 其他 ---------- */
+  footer{padding:0 0 50px; color:var(--muted); font-size:13px}
+  #toast{
+    position:fixed; left:50%; bottom:28px; transform:translate(-50%,16px);
+    background:#1b1c1a; color:#fff; font-size:13px; padding:8px 16px;
+    border-radius:999px; opacity:0; pointer-events:none; transition:.25s; z-index:99;
+  }
+  #toast.show{opacity:1; transform:translate(-50%,0)}
+
+  @media (max-width:520px){
+    .hero h1{font-size:23px}
+    .card{padding:16px}
+    .line{padding:9px 10px}
+  }
+</style>
 </head>
 <body>
 
-    <h1>邀请信写作复习</h1>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Invitation Letter</p>
+    <h1>邀请信写作 · 复习手册</h1>
+    <p class="lede">七步写作流程 + 分类素材库 + 造句练习。点击任意英文句子即可复制；打开下方开关可遮住英文做自测。</p>
+    <div class="tools">
+      <label class="switch">
+        <input type="checkbox" id="maskToggle">
+        <span>遮挡英文自测</span>
+      </label>
+    </div>
+  </div>
+</header>
 
-    <details>
-        <summary>① 介绍自己</summary>
-        <div class="content">
-            <p><span class="en">I am Li Ming, a student from ____ and one of the organizers of this activity.</span></p>
-            <p class="zh">我是李明，来自____的学生，也是本次活动的组织者之一。</p>
-            <hr>
-            <p><span class="en">I am Li Ming, a student representative from ____.</span></p>
-            <p class="zh">我是李明，来自____的学生代表。</p>
-            <hr>
-            <p><span class="en">I am Li Ming, ____ of ____.</span></p>
-            <p class="zh">我是李明，____的____（如：主席/负责人）。</p>
-        </div>
-    </details>
+<nav class="navbar"><div class="wrap" id="navInner"></div></nav>
 
-    <details>
-        <summary>② 写信目的 + 活动信息</summary>
-        <div class="content">
-            <p><b>写信目的：</b></p>
-            <p><span class="en">It is my great pleasure to invite you to our annual forum.</span></p>
-            <p><span class="en">On behalf of the Student Union, I would like to invite you to deliver a lecture.</span></p>
-            <hr>
-            <p><b>活动信息（时间/地点）：</b></p>
-            <p><span class="en">..., which will be held in the school auditorium at 2 p.m. on June 15th.</span></p>
-            <p><span class="en">in Meeting Room 201 at 3 p.m. next Friday</span></p>
-        </div>
-    </details>
+<main class="wrap">
+  <div id="flow"></div>
 
-    <details>
-        <summary>③ 活动价值（句式框架）</summary>
-        <div class="content">
-            <p><span class="en">The activity will provide you with a good opportunity to ______.</span></p>
-            <p><span class="en">The activity will enable you to ______.</span></p>
-            <p><span class="en">The activity will be a good chance for you to ______.</span></p>
-        </div>
-    </details>
+  <div class="sec-head" id="bank">
+    <h2>08 · 分类素材库</h2>
+    <p>按活动类型挑具体好处和动词短语，再回到第 03 部分的好处句式里填空。</p>
+  </div>
+  <div class="grid" id="typeGrid"></div>
 
-    <details>
-        <summary>④ 适度恭维收信人</summary>
-        <div class="content">
-            <p><span class="en">As an expert in this field, you are widely respected by our students.</span></p>
-            <p><span class="en">With your rich experience in this area, you would be a most welcome guest.</span></p>
-            <p><span class="en">Your presence would be greatly appreciated.</span></p>
-        </div>
-    </details>
+  <section class="card builder" id="builder">
+    <div class="card-head"><span class="num">∑</span><h2>造句区：素材 × 句式</h2></div>
+    <p class="note">第 08 部分提供「说什么」，第 03 部分提供「怎么说」。先点句式，再点上面的短语，自动拼成完整句子。</p>
+    <div class="templates" id="templates"></div>
+    <div class="result" id="result"></div>
+  </section>
+</main>
 
-    <details>
-        <summary>⑤ 明确请求 + 截止时间</summary>
-        <div class="content">
-            <p><span class="en">We would be grateful if you could confirm your attendance before June 10th.</span></p>
-            <p><span class="en">Please let us know whether you can come by June 10th.</span></p>
-        </div>
-    </details>
+<footer class="wrap"><p>复习顺序：先读流程 → 再看素材库 → 最后在造句区练手。</p></footer>
 
-    <details>
-        <summary>⑥ 客套话</summary>
-        <div class="content">
-            <p><span class="en">Should you have any questions, please do not hesitate to contact me.</span></p>
-            <p><span class="en">We look forward to welcoming you to our university.</span></p>
-            <p><span class="en">Thank you for your time and consideration.</span></p>
-            <p><span class="en">Thank you in advance for your support.</span></p>
-        </div>
-    </details>
+<div id="toast"></div>
 
-    <details>
-        <summary>⑦ 期待回复</summary>
-        <div class="content">
-            <p><span class="en">Looking forward to your reply.</span></p>
-            <p><span class="en">We look forward to hearing from you soon.</span></p>
-        </div>
-    </details>
+<script>
+/* ===================== 数据 ===================== */
+const STEPS = [
+  {
+    nav:'1. 介绍自己',
+    title:'介绍自己',
+    note:'题目只给「你是李明」时，按收信对象选择身份句式；若没给身份，用「活动组织者」最稳妥。',
+    items:[
+      {tag:'活动组织者', en:'I am Li Ming, a student from ____ and one of the organizers of this activity.'},
+      {tag:'邀请老师/专家', en:'I am Li Ming, a student representative from ____.'},
+      {tag:'班级/社团/组委会', en:'I am Li Ming, ____ of ____.'},
+      {tag:'示例', en:'I am Li Ming, chairman of the Student Union.'},
+      {tag:'示例', en:'I am Li Ming, a graduate student from the School of Foreign Languages.'}
+    ]
+  },
+  {
+    nav:'2. 目的+时间地点',
+    title:'写信目的 + 活动时间地点性质',
+    note:'先用一句话点明邀请目的，再补活动类型与时间地点；两句可用 which 合并。',
+    items:[
+      {tag:'写信目的', en:'It is my great pleasure to invite you to our annual forum.'},
+      {tag:'写信目的', en:'On behalf of the Student Union, I would like to invite you to deliver a lecture.'},
+      {tag:'活动类型', en:'an English speech contest / an academic lecture / a cultural exchange activity / a graduation ceremony / a campus seminar'},
+      {tag:'时间地点', en:'in the school auditorium at 2 p.m. on June 15th'},
+      {tag:'时间地点', en:'in Meeting Room 201 at 3 p.m. next Friday'},
+      {tag:'时间地点', en:'in the conference hall on the morning of June 20th'},
+      {tag:'合并句式', en:'..., which will be held in the school auditorium at 2 p.m. on June 15th.'},
+      {tag:'合并句式', en:'..., an activity themed ...'}
+    ]
+  },
+  {
+    nav:'3. 好处/价值',
+    title:'活动对收信人的好处 / 价值',
+    note:'本部分只给句式骨架，具体内容去第 08 部分按活动类型取。',
+    items:[
+      {tag:'好处句式', en:'The activity will provide you with a good opportunity to ...'},
+      {tag:'好处句式', en:'will enable you to ...'},
+      {tag:'好处句式', en:'will be a good chance for you to ...'},
+      {tag:'示例', en:'The activity will provide you with a good opportunity to exchange ideas with our students.'},
+      {tag:'示例', en:'Your participation will be of great benefit to our students.'}
+    ]
+  },
+  {
+    nav:'4. 适度恭维',
+    title:'适度恭维收信人',
+    note:'放在好处之后、提出请求之前，一两句即可，不要堆砌。',
+    items:[
+      {tag:'恭维句式', en:'As an expert in this field, you are widely respected by our students.'},
+      {tag:'恭维句式', en:'With your rich experience in this area, you would be a most welcome guest.'},
+      {tag:'可替换', en:'As a highly respected scholar, ...'},
+      {tag:'可替换', en:'Your presence would be greatly appreciated.'}
+    ]
+  },
+  {
+    nav:'5. 请求+截止',
+    title:'明确请对方做什么 + 截止时间',
+    note:'请求要具体，并给出明确截止日期，别只写「欢迎参加」。',
+    items:[
+      {tag:'只邀请出席', en:'confirm your attendance before June 10th'},
+      {tag:'请对方发言', en:'give a short speech at the activity'},
+      {tag:'请对方准备', en:'prepare a brief introduction to ...'},
+      {tag:'请对方回复', en:'let us know whether you can come by June 10th'},
+      {tag:'完整句', en:'We would be grateful if you could confirm your attendance before June 10th.'},
+      {tag:'完整句', en:'Please let us know whether you can come by June 10th.'}
+    ]
+  },
+  {
+    nav:'6. 客套话',
+    title:'客套话',
+    note:'提供联系方式或表达感谢，简短自然即可。',
+    items:[
+      {tag:'客套', en:'Should you have any questions, please do not hesitate to contact me.'},
+      {tag:'客套', en:'We look forward to welcoming you to our university.'},
+      {tag:'客套', en:'Thank you for your time and consideration.'},
+      {tag:'客套', en:'We would appreciate your kind reply.'},
+      {tag:'客套', en:'Thank you in advance for your support.'}
+    ]
+  },
+  {
+    nav:'7. 期待回复',
+    title:'期待回复',
+    note:'结尾固定收束句，与开头的邀请形成呼应。',
+    items:[
+      {tag:'结尾', en:'Looking forward to your reply.'},
+      {tag:'结尾', en:'We look forward to hearing from you soon.'}
+    ]
+  }
+];
 
-    <details>
-        <summary>⑧ 活动类型短语库（配合第③部分使用）</summary>
-        <div class="content">
-            
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 学术交流类（会议/讲座/论坛）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">交流观点</span><span class="en">exchange ideas with other scholars</span></p>
-                    <p><span class="tag">分享研究</span><span class="en">share your research findings</span></p>
-                    <p><span class="tag">了解前沿</span><span class="en">learn about the latest developments in the field</span></p>
-                </div>
-            </details>
+const TYPES = [
+  {name:'学术交流类', acts:'学术会议、讲座、论坛', perks:'交流观点、分享研究、了解前沿、结识同行',
+   phrases:['exchange ideas with other scholars','share your research findings','learn about the latest developments in the field','meet other experts']},
+  {name:'指导点评类', acts:'比赛、答辩、评审', perks:'指导年轻学生、点评作品、发现人才',
+   phrases:['offer guidance to young students','comment on their performances','discover talented students']},
+  {name:'社交拓展类', acts:'晚会、聚会、社团活动', perks:'结识新朋友、扩大社交圈、与师生交流',
+   phrases:['make new friends','meet people with similar interests','communicate with our students and teachers']},
+  {name:'放松娱乐类', acts:'晚会、典礼、庆祝活动', perks:'放松身心、欣赏节目、与学生同乐',
+   phrases:['relax and enjoy yourself','enjoy wonderful performances','spend a pleasant evening with us']},
+  {name:'展示分享类', acts:'讲座、经验分享会、演讲比赛', perks:'展示才华、分享经验、发表见解',
+   phrases:['share your valuable experience','present your ideas','show your talent']},
+  {name:'了解合作类', acts:'校园开放日、校企活动、学术会议', perks:'了解学生/学校、促进合作、建立联系',
+   phrases:['learn more about our students','promote cooperation with our university','build closer ties with us']}
+];
 
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 指导点评类（比赛/答辩/评审）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">指导年轻学生</span><span class="en">offer guidance to young students</span></p>
-                    <p><span class="tag">点评作品</span><span class="en">comment on their performances</span></p>
-                    <p><span class="tag">发现人才</span><span class="en">discover talented students</span></p>
-                </div>
-            </details>
+const TEMPLATES = [
+  {en:'The activity will provide you with a good opportunity to ____', cn:'……将为你提供绝佳机会去……'},
+  {en:'The activity will enable you to ____', cn:'……将使你能够……'},
+  {en:'The activity will be a good chance for you to ____', cn:'……将是你的好机会去……'},
+  {en:'We would be grateful if you could ____ before June 10th.', cn:'如果你能在 6 月 10 日前……，我们将不胜感激。'}
+];
 
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 社交拓展类（晚会/聚会/社团）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">结识新朋友</span><span class="en">make new friends</span></p>
-                    <p><span class="tag">扩大社交圈</span><span class="en">meet people with similar interests</span></p>
-                    <p><span class="tag">与师生交流</span><span class="en">communicate with our students and teachers</span></p>
-                </div>
-            </details>
+/* ===================== 工具 ===================== */
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const escAttr = s => esc(s).replace(/"/g,'&quot;');
+const $ = id => document.getElementById(id);
 
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 放松娱乐类（晚会/典礼/庆祝）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">放松身心</span><span class="en">relax and enjoy yourself</span></p>
-                    <p><span class="tag">欣赏节目</span><span class="en">enjoy wonderful performances</span></p>
-                    <p><span class="tag">与学生同乐</span><span class="en">spend a pleasant evening with us</span></p>
-                </div>
-            </details>
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1400);
+}
 
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 展示分享类（讲座/经验分享/演讲）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">分享经验</span><span class="en">share your valuable experience</span></p>
-                    <p><span class="tag">发表见解</span><span class="en">present your ideas</span></p>
-                    <p><span class="tag">展示才华</span><span class="en">show your talent</span></p>
-                </div>
-            </details>
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); }catch(_){}
+    ta.remove();
+  }
+  toast('已复制');
+}
 
-            <details style="border:none; box-shadow:none; padding:0; margin:10px 0;">
-                <summary style="font-size:1em; color:#8e44ad;">▶ 了解合作类（开放日/校企/学术会议）</summary>
-                <div style="padding-left: 15px; margin-top: 10px;">
-                    <p><span class="tag">了解学生</span><span class="en">learn more about our students</span></p>
-                    <p><span class="tag">促进合作</span><span class="en">promote cooperation with our university</span></p>
-                    <p><span class="tag">建立联系</span><span class="en">build closer ties with us</span></p>
-                </div>
-            </details>
+/* ===================== 渲染：导航 ===================== */
+function renderNav(){
+  const items = STEPS.map((s,i)=>({id:'step-'+(i+1), label:s.nav}));
+  items.push({id:'bank', label:'08. 素材库'});
+  items.push({id:'builder', label:'造句区'});
+  $('navInner').innerHTML = items
+    .map(it => `<a href="#${it.id}">${esc(it.label)}</a>`)
+    .join('');
+}
 
-        </div>
-    </details>
+/* ===================== 渲染：七步流程 ===================== */
+function lineHTML(it){
+  const tag = it.tag ? `<span class="tag">${esc(it.tag)}</span>` : '';
+  return `<div class="line">
+      ${tag}
+      <span class="en">${esc(it.en)}</span>
+      <button class="copy" type="button">复制</button>
+    </div>`;
+}
 
-    <p style="text-align: center; color: #bdc3c7; font-size: 0.8em; margin-top: 40px;">
-        点击标题即可折叠 / 展开
-    </p>
+function renderSteps(){
+  $('flow').innerHTML = STEPS.map((s,i)=>`
+    <section class="card" id="step-${i+1}">
+      <div class="card-head">
+        <span class="num">${String(i+1).padStart(2,'0')}</span>
+        <h2>${esc(s.title)}</h2>
+      </div>
+      ${s.note ? `<p class="note">${esc(s.note)}</p>` : ''}
+      <div class="lines">${s.items.map(lineHTML).join('')}</div>
+    </section>
+  `).join('');
+}
 
+/* ===================== 渲染：素材库 ===================== */
+function renderTypes(){
+  $('typeGrid').innerHTML = TYPES.map(t=>`
+    <article class="type">
+      <h3>${esc(t.name)}</h3>
+      <p class="meta"><b>适用</b>${esc(t.acts)}</p>
+      <p class="meta"><b>可写好处</b>${esc(t.perks)}</p>
+      <div class="chips">
+        ${t.phrases.map(p=>`<button class="chip" type="button"
+            data-type="${escAttr(t.name)}" data-phrase="${escAttr(p)}">${esc(p)}</button>`).join('')}
+      </div>
+    </article>
+  `).join('');
+}
+
+/* ===================== 渲染：造句区 ===================== */
+const state = { tplIndex:0, phrase:'', typeName:'' };
+
+function renderTemplates(){
+  $('templates').innerHTML = TEMPLATES.map((t,i)=>`
+    <button class="tpl${i===state.tplIndex?' active':''}" type="button" data-i="${i}">${esc(t.en)}</button>
+  `).join('');
+}
+
+function renderResult(){
+  const box = $('result');
+  if(!state.phrase){
+    box.innerHTML = `<p class="placeholder">还没选短语 —— 点上方素材库里的任意动词短语试试。</p>`;
+    return;
+  }
+  const tpl = TEMPLATES[state.tplIndex];
+  let sentence = tpl.en.includes('____') ? tpl.en.replace('____', state.phrase) : tpl.en + ' ' + state.phrase;
+  if(!/[.!?]$/.test(sentence)) sentence += '.';
+
+  box.innerHTML = `
+    <span class="result-meta">来自「${esc(state.typeName)}」</span>
+    <div class="result-en en">${esc(sentence)}</div>
+    <div class="result-cn">${esc(tpl.cn)}</div>
+    <button class="copy" type="button">复制句子</button>
+  `;
+  box.classList.remove('pulse');
+  void box.offsetWidth;
+  box.classList.add('pulse');
+}
+
+/* ===================== 事件 ===================== */
+document.addEventListener('click', async (e) => {
+  // 复制
+  const copyBtn = e.target.closest('.copy');
+  if(copyBtn){
+    const scope = copyBtn.closest('.line, .result');
+    const target = scope && scope.querySelector('.en');
+    if(target) await copyText(target.textContent.trim());
+    return;
+  }
+
+  // 遮挡模式下的点击揭示
+  const line = e.target.closest('.line');
+  if(line && document.body.classList.contains('masked')){
+    line.classList.toggle('revealed');
+    return;
+  }
+
+  // 点击短语
+  const chip = e.target.closest('.chip');
+  if(chip){
+    document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    state.phrase = chip.dataset.phrase;
+    state.typeName = chip.dataset.type;
+    renderResult();
+    return;
+  }
+
+  // 点击句式模板
+  const tpl = e.target.closest('.tpl');
+  if(tpl){
+    state.tplIndex = Number(tpl.dataset.i);
+    renderTemplates();
+    renderResult();
+  }
+});
+
+$('maskToggle').addEventListener('change', (e)=>{
+  document.body.classList.toggle('masked', e.target.checked);
+  document.querySelectorAll('.line.revealed').forEach(el=>el.classList.remove('revealed'));
+  if(e.target.checked) toast('已遮挡：点击句子查看答案');
+});
+
+/* ===================== 启动 ===================== */
+renderNav();
+renderSteps();
+renderTypes();
+renderTemplates();
+renderResult();
+</script>
 </body>
 </html>
