@@ -10,7 +10,6 @@
     --line:#e5e3db; --accent:#0d6e6e; --soft:#e6f2f2;
     --highlight:#fff3c4; --highlight-ink:#8a5a00;
     --star:#f59e0b; --star-gray:#d1d5db;
-    --pill-bg:#f0f4f4; --pill-hover:#dcebea;
   }
   *{box-sizing:border-box}
   body{
@@ -67,7 +66,7 @@
   /* 标黄与填空逻辑 */
   .en{
     flex:1; font-family:ui-serif,Georgia,"Times New Roman",serif;
-    font-size:15.5px; color:#22303a; line-height:1.7;
+    font-size:15.5px; color:#22303a; line-height:1.7; word-break: break-word;
   }
   .en mark{
     background:var(--highlight); color:var(--highlight-ink);
@@ -75,7 +74,7 @@
   }
   .en strong{ color:var(--accent); font-weight:700; }
   
-  /* 新增：互动填空槽位 */
+  /* 互动填空槽位 */
   .blank-slot {
     display: inline-block;
     min-width: 80px;
@@ -91,24 +90,26 @@
     text-align: center;
     transition: all .2s;
     position: relative;
+    vertical-align: baseline;
   }
   .blank-slot:hover { background: var(--soft); border-color: var(--accent); }
   .blank-slot.has-value { background: #eef7f6; border-style: solid; color: var(--accent); }
 
-  /* 素材药丸库（内联在第3部分） */
+  /* 素材药丸库 */
   .phrase-pool {
-    margin-top: 12px; padding: 12px; background: #f4f8f8;
+    margin-top: 8px; margin-bottom: 16px; padding: 12px; background: #f4f8f8;
     border-radius: 8px; border: 1px solid #d0e3e1;
-    display: none; /* 默认隐藏，点击填空处显示 */
+    display: none; 
   }
   .phrase-pool.show { display: block; animation: fadeIn .2s; }
   @keyframes fadeIn { from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);} }
-  .pool-title { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between;}
-  .pool-close { cursor: pointer; color: var(--accent); }
+  .pool-title { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items:center;}
+  .pool-close { cursor: pointer; color: var(--accent); font-size: 12px; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 4px; }
+  .pool-close:hover { background: var(--accent); color: #fff; }
   
-  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
   .pill-group:last-child { margin-bottom: 0; }
-  .pill-label { font-size: 12px; color: var(--amber); width: 100%; margin-bottom: -2px;}
+  .pill-label { font-size: 12px; color: var(--muted); width: 100%; margin-bottom: -2px; font-weight: bold;}
   .pill {
     font-size: 13px; background: #fff; border: 1px solid #c5d8d7; padding: 4px 10px;
     border-radius: 99px; cursor: pointer; color: #14534f; transition: .15s;
@@ -138,7 +139,7 @@
     padding:8px 10px; border-radius:6px; background:#faf9f6; margin-bottom:6px;
   }
   .phrase-item .en{font-size:14.5px; color:var(--accent); font-weight:600}
-  .btn-use { font-size: 12px; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 6px; cursor: pointer; margin-left: 8px;}
+  .btn-use { font-size: 12px; color: var(--accent); background: transparent; border: 1px solid var(--accent); padding: 2px 8px; border-radius: 6px; cursor: pointer; margin-left: 8px; white-space: nowrap;}
   .btn-use:hover { background: var(--accent); color: #fff;}
 
   .is-hidden { display:none !important; }
@@ -149,7 +150,7 @@
 <div class="wrap">
   <div class="hero">
     <h1>邀请信写作 · 复习手册</h1>
-    <p>点击第 3 部分的 <span style="color:#0d6e6e; border:1px dashed #0d6e6e; padding:0 4px; border-radius:4px;">下划线空</span> 可直接选择素材，体验“骨架+血肉”的组装。</p>
+    <p>高亮内容支持点击替换。体验“骨架+血肉”的拼装，背完点击 ⭐ 收藏。</p>
   </div>
 
   <div class="toolbar">
@@ -173,49 +174,70 @@
 </div>
 
 <script>
-// 数据库（把第8部分的短语提取出来，供各处调用）
+// ---------- 数据篇（查漏补缺：完全对齐 PDF） ----------
+
+// 第2、3部分联动的素材库
 const materialBank = {
-  '学术交流类': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments'],
-  '指导点评类': ['offer guidance to young students', 'comment on their performances', 'discover talented students'],
-  '社交拓展类': ['make new friends', 'meet people with similar interests', 'communicate with our students'],
-  '放松娱乐类': ['relax and enjoy yourself', 'enjoy wonderful performances', 'spend a pleasant evening'],
-  '展示分享类': ['share your valuable experience', 'present your ideas', 'show your talent']
+  '活动类型 (Sec 2)': ['an English speech contest', 'an academic lecture', 'a cultural exchange activity', 'a graduation ceremony', 'a campus seminar'],
+  '时间地点 (Sec 2)': ['in the school auditorium at 2 p.m. on June 15th', 'in Meeting Room 201 at 3 p.m. next Friday', 'in the conference hall on the morning of June 20th'],
+  '学术交流 (Sec 8)': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments in the field', 'meet other experts'],
+  '指导点评 (Sec 8)': ['offer guidance to young students', 'comment on their performances', 'discover talented students'],
+  '社交拓展 (Sec 8)': ['make new friends', 'meet people with similar interests', 'communicate with our students and teachers'],
+  '放松娱乐 (Sec 8)': ['relax and enjoy yourself', 'enjoy wonderful performances', 'spend a pleasant evening with us'],
+  '展示分享 (Sec 8)': ['share your valuable experience', 'present your ideas', 'show your talent'],
+  '了解合作 (Sec 8)': ['learn more about our students', 'promote cooperation with our university', 'build closer ties with us']
 };
 
-// 步骤数据（注意第3部分的特殊占位符 {{slot}}）
+// 7 个步骤的详细数据
 const stepsData = [
   {
     id: 's1', title: '介绍自己',
-    note: '题目只给“你是李明”时，按身份选择句式，黄色部分按需替换。',
+    note: '题目只给“你是李明”时，根据收信人身份选择对应句式。',
     items: [
       { tag: '组织者', html: 'I am Li Ming, a student from <mark>____</mark> and one of the organizers of this activity.' },
-      { tag: '老师/专家', html: 'I am Li Ming, a student representative from <mark>____</mark>.' },
-      { tag: '示例', html: 'I am Li Ming, <mark>chairman of the Student Union</mark>.' }
+      { tag: '邀请老师', html: 'I am Li Ming, a student representative from <mark>____</mark>.' },
+      { tag: '负责人', html: 'I am Li Ming, <mark>____</mark> of <mark>____</mark>.' },
+      { tag: '示例', html: 'I am Li Ming, chairman of the Student Union.' },
+      { tag: '示例', html: 'I am Li Ming, a graduate student from the School of Foreign Languages.' }
     ]
   },
   {
     id: 's2', title: '写信目的 + 活动信息',
-    note: '点明邀请目的，补充时间地点性质。',
+    note: '这里有两个地方可以“拼图”：填入活动类型、填入时间地点。',
     items: [
-      { tag: '目的', html: 'It is my great pleasure to invite you to <mark>our annual forum</mark>.' },
-      { tag: '目的', html: 'On behalf of the Student Union, I would like to invite you to <mark>deliver a lecture</mark>.' },
-      { tag: '合并句', html: '<mark>..., which will be held in the school auditorium at 2 p.m. on June 15th.</mark>' }
+      { tag: '目的', html: 'It is my great pleasure to invite you to our annual forum.' },
+      { tag: '目的', html: 'On behalf of the Student Union, I would like to invite you to deliver a lecture.' },
+      { 
+        tag: '合并句', 
+        isSlot: true, 
+        poolType: ['活动类型 (Sec 2)', '时间地点 (Sec 2)'],
+        html: '..., an activity themed <span class="blank-slot" data-slot-id="type_slot">填入活动类型</span>, which will be held <span class="blank-slot" data-slot-id="loc_slot">填入时间地点</span>.' 
+      }
     ]
   },
   {
-    id: 's3', title: '活动对收信人的好处', // 🔥 重点改造区
-    note: '点击下划线空格，会弹出素材库。体验如何把第 8 部分的短语装进句式。',
+    id: 's3', title: '活动对收信人的好处',
+    note: '将第8部分的具体动词短语装进好处句式。',
     items: [
       { 
         tag: '好处', 
         isSlot: true, 
-        html: 'The activity will <strong>provide you with a good opportunity</strong> to <span class="blank-slot" data-slot-id="slot1">选择素材 ▼</span>.' 
+        poolType: ['学术交流 (Sec 8)', '指导点评 (Sec 8)', '社交拓展 (Sec 8)', '放松娱乐 (Sec 8)', '展示分享 (Sec 8)', '了解合作 (Sec 8)'],
+        html: 'The activity will <strong>provide you with a good opportunity</strong> to <span class="blank-slot" data-slot-id="slot1">选择素材</span>.' 
       },
       { 
         tag: '好处', 
         isSlot: true, 
-        html: 'The activity will <strong>enable you</strong> to <span class="blank-slot" data-slot-id="slot2">选择素材 ▼</span>.' 
-      }
+        poolType: ['学术交流 (Sec 8)', '指导点评 (Sec 8)', '社交拓展 (Sec 8)', '放松娱乐 (Sec 8)', '展示分享 (Sec 8)', '了解合作 (Sec 8)'],
+        html: 'The activity will <strong>enable you</strong> to <span class="blank-slot" data-slot-id="slot2">选择素材</span>.' 
+      },
+      { 
+        tag: '好处', 
+        isSlot: true, 
+        poolType: ['学术交流 (Sec 8)', '指导点评 (Sec 8)', '社交拓展 (Sec 8)', '放松娱乐 (Sec 8)', '展示分享 (Sec 8)', '了解合作 (Sec 8)'],
+        html: 'The activity will <strong>be a good chance for you</strong> to <span class="blank-slot" data-slot-id="slot3">选择素材</span>.' 
+      },
+      { tag: '完整句', html: 'Your participation will be <strong>of great benefit</strong> to our students.' }
     ]
   },
   {
@@ -223,29 +245,46 @@ const stepsData = [
     note: '一两句即可，表达对专家的尊重。',
     items: [
       { tag: '恭维', html: 'As <mark>an expert in this field</mark>, you are widely respected by our students.' },
-      { tag: '恭维', html: 'With <mark>your rich experience in this area</mark>, you would be a most welcome guest.' }
+      { tag: '恭维', html: 'With <mark>your rich experience in this area</mark>, you would be a most welcome guest.' },
+      { tag: '恭维', html: '<mark>As a highly respected scholar</mark>, ...' },
+      { tag: '恭维', html: '<mark>Your presence</mark> would be greatly appreciated.' }
     ]
   },
   {
     id: 's5', title: '明确请求 + 截止时间',
-    note: '请求要具体，截止时间明确。',
+    note: '请求要具体（出席/发言/准备/回复），时间明确。',
     items: [
-      { tag: '请求', html: 'We would be grateful if you could <strong>confirm your attendance</strong> before <mark>June 10th</mark>.' },
-      { tag: '请求', html: 'Please <strong>let us know</strong> whether you can come by <mark>June 10th</mark>.' }
+      { tag: '完整句', html: 'We would be grateful if you could <strong>confirm your attendance</strong> before <mark>June 10th</mark>.' },
+      { tag: '完整句', html: 'Please <strong>let us know whether you can come</strong> by <mark>June 10th</mark>.' },
+      { tag: '动作库', html: '只邀请出席: confirm your attendance before June 10th' },
+      { tag: '动作库', html: '请对方发言: give a short speech at the activity' },
+      { tag: '动作库', html: '请对方准备: prepare a brief introduction to...' }
     ]
   },
   {
-    id: 's6', title: '客套话 + 期待回复',
-    note: '收尾礼节，自然简洁。',
+    id: 's6', title: '客套话',
+    note: '收尾礼节。',
     items: [
       { tag: '客套', html: 'Should you have any questions, please do not hesitate to contact me.' },
-      { tag: '期待', html: 'Looking forward to your reply.' }
+      { tag: '客套', html: 'We look forward to welcoming you to our university.' },
+      { tag: '客套', html: 'Thank you for your time and consideration.' },
+      { tag: '客套', html: 'We would appreciate your kind reply.' },
+      { tag: '客套', html: 'Thank you in advance for your support.' }
+    ]
+  },
+  {
+    id: 's7', title: '期待回复',
+    note: '结尾句。',
+    items: [
+      { tag: '结尾', html: 'Looking forward to your reply.' },
+      { tag: '结尾', html: 'We look forward to hearing from you soon.' }
     ]
   }
 ];
 
+// ---------- 逻辑篇 ----------
+
 let favorites = JSON.parse(localStorage.getItem('invitation_favs')) || {};
-let slotsValue = {}; // 记录填入了什么
 
 function saveFavs() {
   localStorage.setItem('invitation_favs', JSON.stringify(favorites));
@@ -264,7 +303,7 @@ function toggleStar(id) {
 function renderSteps() {
   const container = document.getElementById('stepsContainer');
   container.innerHTML = stepsData.map(step => `
-    <details ${step.id === 's3' ? 'open' : ''}>
+    <details ${step.id === 's2' || step.id === 's3' ? 'open' : ''}>
       <summary><span class="badge">${step.id.slice(1)}</span> ${step.title}</summary>
       <div class="content">
         <p class="note">${step.note}</p>
@@ -272,18 +311,29 @@ function renderSteps() {
           const itemId = `${step.id}_${idx}`;
           const isStarred = favorites[itemId];
           
-          // 如果是第3部分的互动句型，加入素材池
+          // 生成素材池
           let poolHTML = '';
           if (item.isSlot) {
-            poolHTML = `
-              <div class="phrase-pool" id="pool-${itemId}">
-                <div class="pool-title"><span>选择一个短语填入：</span><span class="pool-close" onclick="closePool('${itemId}')">关闭</span></div>
-                ${Object.entries(materialBank).map(([cat, phrases]) => `
+            let poolContent = '';
+            item.poolType.forEach(cat => {
+              const phrases = materialBank[cat] || [];
+              if(phrases.length > 0) {
+                poolContent += `
                   <div class="pill-group">
                     <span class="pill-label">${cat}</span>
-                    ${phrases.map(p => `<span class="pill" onclick="insertPhrase('${itemId}', '${p}')">${p}</span>`).join('')}
+                    ${phrases.map(p => `<span class="pill" onclick="insertPhrase('${itemId}', '${p}', event)">${p}</span>`).join('')}
                   </div>
-                `).join('')}
+                `;
+              }
+            });
+
+            poolHTML = `
+              <div class="phrase-pool" id="pool-${itemId}">
+                <div class="pool-title">
+                  <span>选择素材填入 (选错可点重置)</span>
+                  <span class="pool-close" onclick="resetSlot('${itemId}', event)">重置该句</span>
+                </div>
+                ${poolContent}
               </div>
             `;
           }
@@ -291,7 +341,7 @@ function renderSteps() {
           return `
             <div class="item ${item.isSlot ? 'interactive-item' : ''}" data-id="${itemId}" id="item-${itemId}">
               <span class="tag">${item.tag}</span>
-              <span class="en">${item.html}</span>
+              <span class="en" id="en-${itemId}">${item.html}</span>
               <button class="star-btn ${isStarred ? 'active' : ''}" onclick="toggleStar('${itemId}')">${isStarred ? '★' : '☆'}</button>
             </div>
             ${poolHTML}
@@ -301,12 +351,12 @@ function renderSteps() {
     </details>
   `).join('');
   
-  // 绑定点击槽位事件
+  // 绑定槽位点击
   document.querySelectorAll('.blank-slot').forEach(slot => {
     slot.addEventListener('click', function(e) {
+      e.stopPropagation();
       const itemEl = this.closest('.item');
       const poolId = 'pool-' + itemEl.dataset.id;
-      // 关闭其他所有池
       document.querySelectorAll('.phrase-pool').forEach(p => { if(p.id !== poolId) p.classList.remove('show') });
       document.getElementById(poolId).classList.toggle('show');
     });
@@ -315,26 +365,57 @@ function renderSteps() {
   applyFilter();
 }
 
-// 插入短语
-window.insertPhrase = function(itemId, phrase) {
+// 插入素材
+window.insertPhrase = function(itemId, phrase, event) {
+  if(event) event.stopPropagation();
+  // 找到当前已经高亮的槽位，或者第一个未填的槽位
   const itemEl = document.getElementById('item-' + itemId);
-  const slot = itemEl.querySelector('.blank-slot');
-  slot.textContent = phrase;
-  slot.classList.add('has-value');
+  const slots = itemEl.querySelectorAll('.blank-slot');
+  
+  // 简单策略：找第一个没有 has-value 类的槽位；如果都有，就填第一个
+  let targetSlot = Array.from(slots).find(s => !s.classList.contains('has-value'));
+  if (!targetSlot) targetSlot = slots[0]; 
+
+  targetSlot.textContent = phrase;
+  targetSlot.classList.add('has-value');
+  
+  // 如果所有槽位都填满了，就关闭面板
+  if (Array.from(slots).every(s => s.classList.contains('has-value'))) {
+    document.getElementById('pool-' + itemId).classList.remove('show');
+  }
+}
+
+// 重置句子（清空所有槽位）
+window.resetSlot = function(itemId, event) {
+  if(event) event.stopPropagation();
+  const itemEl = document.getElementById('item-' + itemId);
+  const slots = itemEl.querySelectorAll('.blank-slot');
+  slots.forEach(s => {
+    s.textContent = s.getAttribute('data-default') || '选择素材';
+    s.classList.remove('has-value');
+  });
   document.getElementById('pool-' + itemId).classList.remove('show');
 }
 
-window.closePool = function(itemId) {
-  document.getElementById('pool-' + itemId).classList.remove('show');
-}
+// 保存槽位默认文本
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.blank-slot').forEach(s => {
+      s.setAttribute('data-default', s.textContent.trim());
+    });
+  }, 100);
+});
 
 // 渲染第8部分素材库
 function renderBank() {
   const grid = document.getElementById('bankGrid');
-  grid.innerHTML = Object.entries(materialBank).map(([cat, phrases], tIdx) => `
+  // 过滤掉属于第2部分的活动类型和时间地点
+  const bankKeys = Object.keys(materialBank).filter(k => k.includes('Sec 8'));
+  
+  grid.innerHTML = bankKeys.map((cat, tIdx) => `
     <div class="type-box">
-      <h3>${cat}</h3>
-      ${phrases.map((phrase, pIdx) => {
+      <h3>${cat.replace(' (Sec 8)', '')}</h3>
+      ${materialBank[cat].map((phrase, pIdx) => {
         const itemId = `bank_${tIdx}_${pIdx}`;
         const isStarred = favorites[itemId];
         return `
@@ -354,26 +435,26 @@ function renderBank() {
   applyFilter();
 }
 
-// 从第8部分快捷套用到第3部分
+// 快捷套用到第3部分
 window.useInStep3 = function(phrase) {
-  // 默认填入 slot1 (provide opportunity 句式)
-  const itemId = 's3_0'; 
+  const itemId = 's3_0'; // 默认填入第一句好处
   const itemEl = document.getElementById('item-' + itemId);
   const slot = itemEl.querySelector('.blank-slot');
   slot.textContent = phrase;
   slot.classList.add('has-value');
   
-  // 视觉反馈：滚动并闪烁
+  // 展开并滚动
   const details = document.getElementById('step-s3').closest('details');
   details.open = true;
   document.getElementById('step-s3').scrollIntoView({ behavior: 'smooth', block: 'center' });
   
-  const itemBg = itemEl.style.background;
+  // 闪烁反馈
+  itemEl.style.transition = 'background 0.3s';
   itemEl.style.background = '#fff3c4';
-  setTimeout(() => { itemEl.style.background = itemBg || '#faf9f6'; }, 800);
+  setTimeout(() => { itemEl.style.background = ''; }, 800);
 }
 
-// 过滤逻辑
+// 收藏过滤逻辑
 function applyFilter() {
   const showOnlyFav = document.getElementById('favToggle').checked;
   const items = document.querySelectorAll('.item, .phrase-item');
