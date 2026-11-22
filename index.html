@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>邀请信写作 · 复习手册</title>
 <style>
   :root{
@@ -72,15 +72,15 @@
   }
   .en strong { color: var(--accent); font-weight: 700; }
   
-  /* 原生下拉框样式定制（黄色背景块） */
+  /* 原生下拉框样式定制（解决 iOS 缩放，字号设为 16px） */
   .blank-select {
     background-color: var(--highlight);
     color: var(--highlight-ink);
     border: 1px dashed var(--highlight-ink);
     border-radius: 4px;
-    padding: 3px 24px 3px 8px;
+    padding: 2px 24px 2px 8px;
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: 16px; 
     font-weight: 600;
     cursor: pointer;
     appearance: none;
@@ -94,9 +94,11 @@
     vertical-align: middle;
     max-width: 100%;
   }
-  .blank-select option { background: #fff; color: var(--ink); font-family: inherit; font-size: 14px;}
+  .blank-select option { font-size: 15px; background: #fff; color: var(--ink); }
   .blank-select:hover { background-color: #ffe89a; border-style: solid; }
   .blank-select:focus { border-style: solid; box-shadow: 0 0 0 3px rgba(255, 232, 154, 0.5); }
+  /* 当下拉框选中了值后，改变其边框样式提示用户 */
+  .blank-select.has-value { border-style: solid; background-color: #fff7db; }
 
   /* 标签与收藏 */
   .tag{
@@ -150,7 +152,7 @@
     <details>
       <summary><span class="badge">08</span> 分类素材库</summary>
       <div class="content">
-        <p class="note">丰富的短语库。点击“套用”可自动填入上方第 3 部分的下拉框中。</p>
+        <p class="note">丰富的短语库。点击“套用”，会自动填入上方<b>最近一次点击</b>的下拉框中。</p>
         <div class="grid" id="bankGrid"></div>
       </div>
     </details>
@@ -158,34 +160,44 @@
 </div>
 
 <script>
-// 准备下拉选项 HTML
+// 全局记录最后点击的下拉框，方便第8部分定向套用
+let lastFocusedSelect = null;
+
+// 数据结构：用对象分组，不再用 slice 截取，防错
+const bankSec8 = {
+  '学术交流类': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments in the field', 'meet other experts'],
+  '指导点评类': ['offer guidance to young students', 'comment on their performances', 'discover talented students'],
+  '社交拓展类': ['make new friends', 'meet people with similar interests', 'communicate with our students and teachers'],
+  '放松娱乐类': ['relax and enjoy yourself', 'enjoy wonderful performances', 'spend a pleasant evening with us'],
+  '展示分享类': ['share your valuable experience', 'present your ideas', 'show your talent'],
+  '了解合作类': ['learn more about our students', 'promote cooperation with our university', 'build closer ties with us']
+};
+
+// 扁平化数组，用于生成第3部分的下拉选项
+const allPhrases = Object.values(bankSec8).flat();
+
+// 生成下拉框选项 HTML，加入“清空”功能
 const getOptions = (list, placeholder) => {
   let html = `<option value="" disabled selected>${placeholder}</option>`;
+  html += `<option value="" style="color:#999;">-- 清空选择 --</option>`;
   list.forEach(item => {
-    html += `<option value="${item}">${item}</option>`;
+    // 替换引号防止 HTML 断裂
+    const safeItem = item.replace(/"/g, '&quot;');
+    html += `<option value="${safeItem}">${item}</option>`;
   });
   return html;
 };
-
-const bankSec8 = [
-  'exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments in the field', 'meet other experts',
-  'offer guidance to young students', 'comment on their performances', 'discover talented students',
-  'make new friends', 'meet people with similar interests', 'communicate with our students and teachers',
-  'relax and enjoy yourself', 'enjoy wonderful performances', 'spend a pleasant evening with us',
-  'share your valuable experience', 'present your ideas', 'show your talent',
-  'learn more about our students', 'promote cooperation with our university', 'build closer ties with us'
-];
 
 const stepsData = [
   {
     id: 's1', title: '介绍自己',
     note: '根据收信人身份，通过黄色下拉框选择对应句式。',
     items: [
-      { tag: '组织者', html: 'I am Li Ming, a student from <select class="blank-select"><option value="" disabled selected>院系</option><option value="the School of Foreign Languages">the School of Foreign Languages</option><option value="the School of Economics">the School of Economics</option></select> and one of the organizers of this activity.' },
-      { tag: '邀请老师', html: 'I am Li Ming, a student representative from <select class="blank-select"><option value="" disabled selected>院系</option><option value="the School of Foreign Languages">the School of Foreign Languages</option></select>.' },
-      { tag: '负责人', html: 'I am Li Ming, <select class="blank-select"><option value="" disabled selected>职务</option><option value="chairman">chairman</option><option value="president">president</option></select> of <select class="blank-select"><option value="" disabled selected>组织</option><option value="the Student Union">the Student Union</option></select>.' },
-      { tag: '示例', html: 'I am Li Ming, chairman of the Student Union.' },
-      { tag: '示例', html: 'I am Li Ming, a graduate student from the School of Foreign Languages.' }
+      { tag: '组织者', html: `I am Li Ming, a student from <select class="blank-select"><option value="" disabled selected>院系</option><option value="" style="color:#999;">-- 清空 --</option><option value="the School of Foreign Languages">the School of Foreign Languages</option><option value="the School of Economics">the School of Economics</option></select> and <strong>one of the organizers</strong> of this activity.` },
+      { tag: '邀请老师', html: `I am Li Ming, a <strong>student representative</strong> from <select class="blank-select"><option value="" disabled selected>院系</option><option value="" style="color:#999;">-- 清空 --</option><option value="the School of Foreign Languages">the School of Foreign Languages</option></select>.` },
+      { tag: '负责人', html: `I am Li Ming, <select class="blank-select"><option value="" disabled selected>职务</option><option value="" style="color:#999;">-- 清空 --</option><option value="chairman">chairman</option><option value="president">president</option></select> of <select class="blank-select"><option value="" disabled selected>组织</option><option value="" style="color:#999;">-- 清空 --</option><option value="the Student Union">the Student Union</option></select>.` },
+      { tag: '示例', html: 'I am Li Ming, <strong>chairman of the Student Union</strong>.' },
+      { tag: '示例', html: 'I am Li Ming, a <strong>graduate student</strong> from the School of Foreign Languages.' }
     ]
   },
   {
@@ -196,7 +208,7 @@ const stepsData = [
       { tag: '目的', html: 'On behalf of the Student Union, I would like to <strong>invite you to deliver a lecture</strong>.' },
       { 
         tag: '合并句', 
-        html: '..., an activity themed <select class="blank-select" style="min-width:160px;"><option value="" disabled selected>活动类型</option><option value="an English speech contest">an English speech contest</option><option value="an academic lecture">an academic lecture</option><option value="a cultural exchange activity">a cultural exchange activity</option><option value="a graduation ceremony">a graduation ceremony</option><option value="a campus seminar">a campus seminar</option></select>, which <strong>will be held</strong> <select class="blank-select" style="min-width:200px;"><option value="" disabled selected>时间地点</option><option value="in the school auditorium at 2 p.m. on June 15th">in the school auditorium at 2 p.m. on June 15th</option><option value="in Meeting Room 201 at 3 p.m. next Friday">in Meeting Room 201 at 3 p.m. next Friday</option><option value="in the conference hall on the morning of June 20th">in the conference hall on the morning of June 20th</option></select>.' 
+        html: `..., an activity themed <select class="blank-select" style="min-width:160px;"><option value="" disabled selected>活动类型</option><option value="" style="color:#999;">-- 清空 --</option><option value="an English speech contest">an English speech contest</option><option value="an academic lecture">an academic lecture</option><option value="a cultural exchange activity">a cultural exchange activity</option><option value="a graduation ceremony">a graduation ceremony</option><option value="a campus seminar">a campus seminar</option></select>, which <strong>will be held</strong> <select class="blank-select" style="min-width:220px;"><option value="" disabled selected>时间地点</option><option value="" style="color:#999;">-- 清空 --</option><option value="in the school auditorium at 2 p.m. on June 15th">in the school auditorium at 2 p.m. on June 15th</option><option value="in Meeting Room 201 at 3 p.m. next Friday">in Meeting Room 201 at 3 p.m. next Friday</option><option value="in the conference hall on the morning of June 20th">in the conference hall on the morning of June 20th</option></select>.` 
       }
     ]
   },
@@ -204,9 +216,9 @@ const stepsData = [
     id: 's3', title: '活动对收信人的好处',
     note: '青色部分为核心句式骨架，黄色下拉框内填入第 8 部分的动词短语。',
     items: [
-      { tag: '好处', html: 'The activity will <strong>provide you with a good opportunity</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(bankSec8, '选择素材')}</select>.' },
-      { tag: '好处', html: 'The activity will <strong>enable you</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(bankSec8, '选择素材')}</select>.' },
-      { tag: '好处', html: 'The activity will <strong>be a good chance for you</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(bankSec8, '选择素材')}</select>.' },
+      { tag: '好处', html: `The activity will <strong>provide you with a good opportunity</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(allPhrases, '选择素材')}</select>.` },
+      { tag: '好处', html: `The activity will <strong>enable you</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(allPhrases, '选择素材')}</select>.` },
+      { tag: '好处', html: `The activity will <strong>be a good chance for you</strong> to <select class="blank-select" style="min-width:180px;">${getOptions(allPhrases, '选择素材')}</select>.` },
       { tag: '完整句', html: 'Your participation will <strong>be of great benefit</strong> to our students.' }
     ]
   },
@@ -224,8 +236,8 @@ const stepsData = [
     id: 's5', title: '明确请求 + 截止时间',
     note: '具体动作和截止时间均可下拉替换。',
     items: [
-      { tag: '完整句', html: '<strong>We would be grateful if you could</strong> <select class="blank-select" style="min-width:180px;"><option value="" disabled selected>动作</option><option value="confirm your attendance">confirm your attendance</option><option value="give a short speech at the activity">give a short speech at the activity</option><option value="prepare a brief introduction to...">prepare a brief introduction to...</option></select> before <select class="blank-select" style="min-width:100px;"><option value="" disabled selected>时间</option><option value="June 10th">June 10th</option><option value="next Friday">next Friday</option></select>.' },
-      { tag: '完整句', html: 'Please <strong>let us know whether you can come</strong> by <select class="blank-select" style="min-width:100px;"><option value="" disabled selected>时间</option><option value="June 10th">June 10th</option><option value="next Friday">next Friday</option></select>.' }
+      { tag: '完整句', html: `<strong>We would be grateful if you could</strong> <select class="blank-select" style="min-width:200px;"><option value="" disabled selected>动作</option><option value="" style="color:#999;">-- 清空 --</option><option value="confirm your attendance">confirm your attendance</option><option value="give a short speech at the activity">give a short speech at the activity</option><option value="prepare a brief introduction to...">prepare a brief introduction to...</option></select> before <select class="blank-select" style="min-width:100px;"><option value="" disabled selected>时间</option><option value="" style="color:#999;">-- 清空 --</option><option value="June 10th">June 10th</option><option value="next Friday">next Friday</option></select>.` },
+      { tag: '完整句', html: `Please <strong>let us know whether you can come</strong> by <select class="blank-select" style="min-width:100px;"><option value="" disabled selected>时间</option><option value="" style="color:#999;">-- 清空 --</option><option value="June 10th">June 10th</option><option value="next Friday">next Friday</option></select>.` }
     ]
   },
   {
@@ -249,10 +261,23 @@ const stepsData = [
   }
 ];
 
-// 初始化收藏状态
 let favorites = JSON.parse(localStorage.getItem('invitation_favs')) || {};
 
-// 渲染步骤（不传入重新渲染逻辑，保持下拉框状态）
+// 监听下拉框变化，改变样式提示已选，并记录最后一次操作
+document.addEventListener('change', function(e) {
+  if (e.target.classList.contains('blank-select')) {
+    const val = e.target.value;
+    if (val) e.target.classList.add('has-value');
+    else e.target.classList.remove('has-value');
+  }
+});
+
+document.addEventListener('focusin', function(e) {
+  if (e.target.classList.contains('blank-select')) {
+    lastFocusedSelect = e.target;
+  }
+});
+
 function renderSteps() {
   const container = document.getElementById('stepsContainer');
   container.innerHTML = stepsData.map(step => `
@@ -278,32 +303,24 @@ function renderSteps() {
   applyFilter();
 }
 
-// 渲染素材库
 function renderBank() {
   const grid = document.getElementById('bankGrid');
-  const groupedBank = {
-    '学术交流类': bankSec8.slice(0, 4),
-    '指导点评类': bankSec8.slice(4, 7),
-    '社交拓展类': bankSec8.slice(7, 10),
-    '放松娱乐类': bankSec8.slice(10, 13),
-    '展示分享类': bankSec8.slice(13, 16),
-    '了解合作类': bankSec8.slice(16, 19)
-  };
-
-  grid.innerHTML = Object.entries(groupedBank).map(([cat, phrases], tIdx) => `
+  grid.innerHTML = Object.entries(bankSec8).map(([cat, phrases], tIdx) => `
     <div class="type-box">
       <h3>${cat}</h3>
       ${phrases.map((phrase, pIdx) => {
         const itemId = `bank_${tIdx}_${pIdx}`;
         const isStarred = favorites[itemId] ? 'active' : '';
         const starChar = favorites[itemId] ? '★' : '☆';
+        // 使用 encodeURIComponent 避开引号嵌套报错
+        const safePhrase = encodeURIComponent(phrase);
         return `
           <div class="phrase-item" id="item-${itemId}">
             <div style="flex:1;">
               <span class="en">${phrase}</span>
             </div>
             <div style="display:flex; align-items:center;">
-              <button class="btn-use" onclick="useInStep3('${phrase}')">套用</button>
+              <button class="btn-use" data-phrase="${safePhrase}">套用</button>
               <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
             </div>
           </div>
@@ -314,8 +331,9 @@ function renderBank() {
   applyFilter();
 }
 
-// 点收藏：只更新图标和状态，不重新渲染整个 DOM（解决折叠问题）
+// 统一的点击事件管理
 document.addEventListener('click', function(e) {
+  // 1. 处理收藏点击
   const starBtn = e.target.closest('.star-btn');
   if (starBtn) {
     const id = starBtn.dataset.id;
@@ -330,34 +348,40 @@ document.addEventListener('click', function(e) {
     }
     localStorage.setItem('invitation_favs', JSON.stringify(favorites));
     
-    // 如果开启了“只看收藏”，需要重新应用过滤
-    if (document.getElementById('favToggle').checked) {
-      applyFilter();
+    if (document.getElementById('favToggle').checked) applyFilter();
+    return;
+  }
+
+  // 2. 处理“套用”点击
+  const useBtn = e.target.closest('.btn-use');
+  if (useBtn) {
+    const phrase = decodeURIComponent(useBtn.dataset.phrase);
+    let targetSelect = lastFocusedSelect;
+
+    // 如果用户没点过下拉框，或者最后点的不在可视区/已被隐藏，默认用第3部分第一句
+    if (!targetSelect || targetSelect.closest('.is-hidden')) {
+      targetSelect = document.querySelector('#item-s3_0 .blank-select');
+    }
+    
+    if (targetSelect) {
+      targetSelect.value = phrase;
+      targetSelect.classList.add('has-value');
+      
+      // 展开容器并滚动
+      const targetItem = targetSelect.closest('.item');
+      const details = targetItem.closest('details');
+      if (details && !details.open) details.open = true;
+      
+      targetItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // 闪烁反馈
+      targetItem.style.transition = 'background 0.3s';
+      targetItem.style.background = '#fff3c4';
+      setTimeout(() => { targetItem.style.background = ''; }, 800);
     }
   }
 });
 
-// 快捷套用到第3部分（修改原生 select 的 value）
-window.useInStep3 = function(phrase) {
-  // 找到第3部分的第一个下拉框
-  const selectEl = document.querySelector('#item-s3_0 .blank-select');
-  if (selectEl) {
-    selectEl.value = phrase;
-    
-    // 展开第3部分并滚动
-    const details = document.getElementById('item-s3_0').closest('details');
-    details.open = true;
-    document.getElementById('item-s3_0').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // 视觉反馈
-    const itemEl = document.getElementById('item-s3_0');
-    itemEl.style.transition = 'background 0.3s';
-    itemEl.style.background = '#fff3c4';
-    setTimeout(() => { itemEl.style.background = ''; }, 800);
-  }
-}
-
-// 过滤逻辑
 function applyFilter() {
   const showOnlyFav = document.getElementById('favToggle').checked;
   const items = document.querySelectorAll('.item, .phrase-item');
@@ -378,7 +402,6 @@ function applyFilter() {
 
 document.getElementById('favToggle').addEventListener('change', applyFilter);
 
-// 启动
 renderSteps();
 renderBank();
 </script>
