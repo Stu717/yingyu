@@ -58,52 +58,62 @@
   .content{padding:0 20px 20px 20px; border-top:1px solid var(--line); padding-top:16px}
   .note{font-size:13.5px; color:var(--muted); margin:0 0 16px}
   
-  /* 句子列表 */
-  .item{
-    display:flex; gap:12px; padding:10px 12px; border-radius:8px;
-    margin-bottom:8px; background:#faf9f6; align-items:flex-start;
-    transition:background .15s;
+  /* 句子块 */
+  .sentence-block {
+    margin-bottom: 12px; padding: 12px; border-radius: 8px;
+    background: #faf9f6; border: 1px solid transparent; transition: background .15s;
   }
-  .item:hover{background:#fff; border:1px solid var(--line); padding:9px 11px}
+  .sentence-block:hover { background: #fff; border-color: var(--line); }
   
-  /* 标黄与加粗逻辑 */
-  .en{
-    flex:1; font-family:ui-serif,Georgia,"Times New Roman",serif;
-    font-size:15.5px; color:#22303a; line-height:2.2; word-break: break-word;
+  .sentence-head { display: flex; gap: 12px; align-items: flex-start; }
+  
+  .sentence-text {
+    flex: 1; font-family: ui-serif,Georgia,"Times New Roman",serif;
+    font-size: 15.5px; color: #22303a; line-height: 2.2; word-break: break-word;
     transition: filter .2s;
   }
-  .en strong { color: var(--accent); font-weight: 700; }
-  
-  /* 模糊自测逻辑 */
-  body.masked .en { filter: blur(var(--blur-amt)); cursor: help; }
-  body.masked .en:hover, body.masked .en.revealed { filter: none; cursor: text; }
-  body.masked .blank-slot { filter: none !important; } /* 下拉框保持清晰 */
+  .sentence-text strong { color: var(--accent); font-weight: 700; }
 
-  /* 黄色虚线槽位 */
-  .blank-slot {
+  /* 模糊自测逻辑 */
+  body.masked .sentence-text { filter: blur(var(--blur-amt)); cursor: help; }
+  body.masked .sentence-text:hover, body.masked .sentence-text.revealed { filter: none; cursor: text; }
+
+  /* 变量显示区 (纯文本显示，不放下拉框) */
+  .var-display {
     display: inline-block;
-    min-width: 60px;
-    background-color: var(--highlight);
+    min-width: 70px;
+    background: var(--highlight);
     color: var(--highlight-ink);
     border: 1.5px dashed var(--highlight-ink);
     border-radius: 4px;
-    padding: 0 8px;
-    margin: 0 2px;
-    cursor: pointer;
+    padding: 0 6px;
     font-family: inherit;
     font-size: 14.5px;
     font-weight: 600;
     text-align: center;
     transition: all .2s;
-    user-select: none;
     vertical-align: baseline;
   }
-  .blank-slot:hover { background-color: #ffe89a; border-style: solid; }
-  .blank-slot.has-value { border-style: solid; background-color: #fff7db; color: var(--accent); }
+  .var-display.has-value {
+    border-style: solid;
+    background: #fff7db;
+    color: var(--accent);
+  }
+
+  /* 单独放置的操作按钮 */
+  .action-row {
+    margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .action-btn {
+    background: #fff; border: 1px dashed var(--accent); color: var(--accent);
+    border-radius: 4px; padding: 4px 10px; font-size: 12px; cursor: pointer;
+    transition: .2s; font-family: inherit; font-weight: 600;
+  }
+  .action-btn:hover { background: var(--accent); color: #fff; border-style: solid; }
 
   /* 弹出药丸面板 */
   .phrase-pool {
-    margin: 4px 0 16px 0; padding: 14px; background: #f4f8f8;
+    margin-top: 12px; padding: 14px; background: #f4f8f8;
     border-radius: 8px; border: 1px solid #d0e3e1;
     display: none; 
   }
@@ -161,6 +171,22 @@
     color:var(--star-gray); padding:0; margin-top:4px; transition:.15s; outline:none;
   }
   .star-btn:hover, .star-btn.active{color:var(--star)}
+
+  /* 笔记区域 */
+  .note-area {
+    margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--line);
+  }
+  .note-label {
+    font-size: 13px; font-weight: 600; color: var(--accent);
+    margin-bottom: 8px; display: flex; align-items: center; gap: 4px;
+  }
+  .custom-note {
+    width: 100%; min-height: 80px; padding: 10px;
+    border: 1px solid #c5d8d7; border-radius: 6px;
+    font-family: inherit; font-size: 13.5px; line-height: 1.5;
+    resize: vertical; outline: none; transition: border .2s; background: #faf9f6;
+  }
+  .custom-note:focus { border-color: var(--accent); background: #fff; }
   
   /* 第8部分素材库 */
   .grid{display:grid; gap:12px; grid-template-columns:1fr; margin-top:10px}
@@ -183,7 +209,7 @@
   <div class="hero">
     <h1>邀请信写作 · 复习手册</h1>
     <p>
-      <mark>黄色虚线框</mark>为需替换词汇（点击弹出面板，支持自定义）；<br>
+      <mark>[括号内]</mark>为需替换词汇，点击句子下方的按钮即可替换；<br>
       <strong>青色加粗</strong>为背诵时要抓住的核心动词搭配。
     </p>
   </div>
@@ -207,15 +233,16 @@
       <div class="content">
         <p class="note">核心短语库，可直接复习或收藏。</p>
         <div class="grid" id="bankGrid"></div>
+        <div class="note-area">
+          <div class="note-label">📝 我的笔记</div>
+          <textarea class="custom-note" data-id="step-s8" placeholder="在此记录背诵技巧、易错点..."></textarea>
+        </div>
       </div>
     </details>
   </div>
 </div>
 
 <script>
-// 记录最后点击的槽位
-let lastFocusedSlot = null;
-
 // 默认基础素材
 const defaultBank = {
   '学术交流类': ['exchange ideas with other scholars', 'share your research findings', 'learn about the latest developments in the field', 'meet other experts'],
@@ -232,18 +259,17 @@ const defaultPool = {
   'action': ['confirm your attendance', 'give a short speech at the activity', 'prepare a brief introduction to...'],
   'deadline': ['June 10th', 'next Friday'],
   'department': ['the School of Foreign Languages', 'the School of Economics'],
-  'role': ['chairman', 'president']
+  'role': ['chairman', 'president'],
+  'organization': ['the Student Union', 'the Organizing Committee', 'the Class Committee']
 };
 
-// 读取自定义数据
 let customPoolData = JSON.parse(localStorage.getItem('custom_pool_data')) || {};
+let notesData = JSON.parse(localStorage.getItem('invitation_notes')) || {};
+let favorites = JSON.parse(localStorage.getItem('invitation_favs')) || {};
 
-// 保存自定义数据
-function saveCustomData() {
-  localStorage.setItem('custom_pool_data', JSON.stringify(customPoolData));
-}
+function saveCustomData() { localStorage.setItem('custom_pool_data', JSON.stringify(customPoolData)); }
 
-// 根据类型生成面板 HTML (融合自定义数据)
+// 生成面板 HTML
 function getPoolHTML(type) {
   let title = '选择素材';
   let groups = [];
@@ -253,7 +279,7 @@ function getPoolHTML(type) {
   } else if (type === 'location') {
     title = '时间地点'; groups = [{ name: '可选时间地点', items: defaultPool.location }];
   } else if (type === 'benefit') {
-    title = '第8部分 · 好处素材库';
+    title = '好处素材库 (结合第8部分)';
     groups = Object.entries(defaultBank).map(([k, v]) => ({ name: k, items: v }));
   } else if (type === 'action') {
     title = '请求动作'; groups = [{ name: '具体动作', items: defaultPool.action }];
@@ -263,30 +289,29 @@ function getPoolHTML(type) {
     title = '院系'; groups = [{ name: '院系', items: defaultPool.department }];
   } else if (type === 'role') {
     title = '职务'; groups = [{ name: '职务', items: defaultPool.role }];
+  } else if (type === 'organization') {
+    title = '组织'; groups = [{ name: '组织', items: defaultPool.organization }];
   }
 
-  // 检查是否有自定义数据并加入分组
   if (customPoolData[type] && customPoolData[type].length > 0) {
     groups.push({ name: '自定义补充', items: customPoolData[type], isCustom: true });
   }
 
-  let html = `<div class="pool-title"><span>${title}</span><span class="pool-close">关闭面板</span></div>`;
+  let html = `<div class="pool-title"><span>${title}</span><span class="pool-close">关闭</span></div>`;
   
   groups.forEach(g => {
     html += `<div class="pill-group"><span class="pill-label">${g.name}</span>`;
     g.items.forEach(item => {
       const safeVal = item.replace(/"/g, '&quot;');
-      // 如果是自定义分组，增加删除按钮
-      const delBtn = g.isCustom ? `<span class="pill-del" data-type="${type}" data-val="${safeVal}" title="删除该词条">×</span>` : '';
+      const delBtn = g.isCustom ? `<span class="pill-del" data-type="${type}" data-val="${safeVal}">×</span>` : '';
       html += `<span class="pill" data-value="${safeVal}">${item} ${delBtn}</span>`;
     });
     html += `</div>`;
   });
 
-  // 底部加入自定义输入框
   html += `
     <form class="custom-form" data-type="${type}">
-      <input type="text" class="custom-input" placeholder="输入想要补充的短语，按回车添加..." required>
+      <input type="text" class="custom-input" placeholder="输入想要补充的短语..." required>
       <button type="submit" class="custom-btn">添加</button>
     </form>
   `;
@@ -294,84 +319,122 @@ function getPoolHTML(type) {
   return html;
 }
 
-// 生成槽位 HTML
-const slot = (type, defaultText) => `<span class="blank-slot" data-pool="${type}" data-default="${defaultText}">${defaultText}</span>`;
-
 const stepsData = [
   {
     id: 's1', title: '介绍自己',
-    note: '根据收信人身份，选择对应句式。',
+    note: '根据收信人身份，选择对应句式。点击下方按钮替换空白处。',
     items: [
-      { tag: '组织者', html: `I am Li Ming, a student from ${slot('department', '院系')} and <strong>one of the organizers</strong> of this activity.` },
-      { tag: '邀请老师', html: `I am Li Ming, a <strong>student representative</strong> from ${slot('department', '院系')}.` },
-      { tag: '负责人', html: `I am Li Ming, ${slot('role', '职务')} of the Student Union.` },
-      { tag: '示例', html: 'I am Li Ming, <strong>chairman of the Student Union</strong>.' },
-      { tag: '示例', html: 'I am Li Ming, a <strong>graduate student</strong> from the School of Foreign Languages.' }
+      { 
+        tag: '组织者', 
+        text: 'I am Li Ming, a student from <span class="var-display" data-slot="var-dept1">[院系]</span> and <strong>one of the organizers</strong> of this activity.',
+        actions: [{ label: '选择院系', target: 'var-dept1', type: 'department' }]
+      },
+      { 
+        tag: '邀请老师', 
+        text: 'I am Li Ming, a <strong>student representative</strong> from <span class="var-display" data-slot="var-dept2">[院系]</span>.',
+        actions: [{ label: '选择院系', target: 'var-dept2', type: 'department' }]
+      },
+      { 
+        tag: '负责人', 
+        text: 'I am Li Ming, <span class="var-display" data-slot="var-role">[职务]</span> of <span class="var-display" data-slot="var-org">[组织]</span>.',
+        actions: [
+          { label: '选择职务', target: 'var-role', type: 'role' },
+          { label: '选择组织', target: 'var-org', type: 'organization' }
+        ]
+      },
+      { tag: '示例', text: 'I am Li Ming, <strong>chairman of the Student Union</strong>.' },
+      { tag: '示例', text: 'I am Li Ming, a <strong>graduate student</strong> from the School of Foreign Languages.' }
     ]
   },
   {
     id: 's2', title: '写信目的 + 活动信息',
-    note: '合并句式填空：先选活动类型，再选时间地点。',
+    note: '合并句式填空：原句不放下拉框，点击下方对应按钮选择即可。',
     items: [
-      { tag: '目的', html: 'It is my great pleasure to <strong>invite you to our annual forum</strong>.' },
-      { tag: '目的', html: 'On behalf of the Student Union, I would like to <strong>invite you to deliver a lecture</strong>.' },
+      { tag: '目的', text: 'It is my great pleasure to <strong>invite you to our annual forum</strong>.' },
+      { tag: '目的', text: 'On behalf of the Student Union, I would like to <strong>invite you to deliver a lecture</strong>.' },
       { 
         tag: '合并句', 
-        html: `..., an activity themed ${slot('activity', '活动类型')}, which <strong>will be held</strong> ${slot('location', '时间地点')}.` 
+        text: '..., an activity themed <span class="var-display" data-slot="var-act">[活动类型]</span>, which <strong>will be held</strong> <span class="var-display" data-slot="var-loc">[时间地点]</span>.',
+        actions: [
+          { label: '选择活动类型', target: 'var-act', type: 'activity' },
+          { label: '选择时间地点', target: 'var-loc', type: 'location' }
+        ]
       }
     ]
   },
   {
     id: 's3', title: '活动对收信人的好处',
-    note: '青色部分为核心骨架，点击黄色虚线框弹出第 8 部分的素材。',
+    note: '点击下方按钮，从第 8 部分的素材库中选择短语填入。',
     items: [
-      { tag: '好处', html: `The activity will <strong>provide you with a good opportunity</strong> to ${slot('benefit', '选择素材')}.` },
-      { tag: '好处', html: `The activity will <strong>enable you</strong> to ${slot('benefit', '选择素材')}.` },
-      { tag: '好处', html: `The activity will <strong>be a good chance for you</strong> to ${slot('benefit', '选择素材')}.` },
-      { tag: '完整句', html: 'Your participation will <strong>be of great benefit</strong> to our students.' }
+      { 
+        tag: '好处', 
+        text: 'The activity will <strong>provide you with a good opportunity</strong> to <span class="var-display" data-slot="var-b1">[选择动词短语]</span>.',
+        actions: [{ label: '选择动词短语', target: 'var-b1', type: 'benefit' }]
+      },
+      { 
+        tag: '好处', 
+        text: 'The activity will <strong>enable you</strong> to <span class="var-display" data-slot="var-b2">[选择动词短语]</span>.',
+        actions: [{ label: '选择动词短语', target: 'var-b2', type: 'benefit' }]
+      },
+      { 
+        tag: '好处', 
+        text: 'The activity will <strong>be a good chance for you</strong> to <span class="var-display" data-slot="var-b3">[选择动词短语]</span>.',
+        actions: [{ label: '选择动词短语', target: 'var-b3', type: 'benefit' }]
+      },
+      { tag: '完整句', text: 'Your participation will <strong>be of great benefit</strong> to our students.' }
     ]
   },
   {
     id: 's4', title: '适度恭维收信人',
     note: '一两句即可，把握核心赞美词。',
     items: [
-      { tag: '恭维', html: 'As <strong>an expert in this field</strong>, you are <strong>widely respected by our students</strong>.' },
-      { tag: '恭维', html: 'With <strong>your rich experience in this area</strong>, <strong>you would be a most welcome guest</strong>.' },
-      { tag: '恭维', html: 'As <strong>a highly respected scholar</strong>, ...' },
-      { tag: '恭维', html: '<strong>Your presence would be greatly appreciated</strong>.' }
+      { tag: '恭维', text: 'As <strong>an expert in this field</strong>, you are <strong>widely respected by our students</strong>.' },
+      { tag: '恭维', text: 'With <strong>your rich experience in this area</strong>, <strong>you would be a most welcome guest</strong>.' },
+      { tag: '恭维', text: 'As <strong>a highly respected scholar</strong>, ...' },
+      { tag: '恭维', text: '<strong>Your presence would be greatly appreciated</strong>.' }
     ]
   },
   {
     id: 's5', title: '明确请求 + 截止时间',
-    note: '具体动作和截止时间均可点击替换。',
+    note: '具体动作和截止时间均可点击下方按钮替换。',
     items: [
-      { tag: '完整句', html: `<strong>We would be grateful if you could</strong> ${slot('action', '动作')} before ${slot('deadline', '时间')}.` },
-      { tag: '完整句', html: `Please <strong>let us know whether you can come</strong> by ${slot('deadline', '时间')}.` }
+      { 
+        tag: '完整句', 
+        text: '<strong>We would be grateful if you could</strong> <span class="var-display" data-slot="var-act1">[动作]</span> before <span class="var-display" data-slot="var-time1">[时间]</span>.',
+        actions: [
+          { label: '选择动作', target: 'var-act1', type: 'action' },
+          { label: '选择时间', target: 'var-time1', type: 'deadline' }
+        ]
+      },
+      { 
+        tag: '完整句', 
+        text: 'Please <strong>let us know whether you can come</strong> by <span class="var-display" data-slot="var-time2">[时间]</span>.',
+        actions: [{ label: '选择时间', target: 'var-time2', type: 'deadline' }]
+      }
     ]
   },
   {
     id: 's6', title: '客套话',
     note: '收尾礼节。',
     items: [
-      { tag: '客套', html: 'Should you have any questions, please <strong>do not hesitate to contact me</strong>.' },
-      { tag: '客套', html: 'We <strong>look forward to welcoming you</strong> to our university.' },
-      { tag: '客套', html: 'Thank you for your time and consideration.' },
-      { tag: '客套', html: 'We would appreciate your kind reply.' },
-      { tag: '客套', html: 'Thank you in advance for your support.' }
+      { tag: '客套', text: 'Should you have any questions, please <strong>do not hesitate to contact me</strong>.' },
+      { tag: '客套', text: 'We <strong>look forward to welcoming you</strong> to our university.' },
+      { tag: '客套', text: 'Thank you for your time and consideration.' },
+      { tag: '客套', text: 'We would appreciate your kind reply.' },
+      { tag: '客套', text: 'Thank you in advance for your support.' }
     ]
   },
   {
     id: 's7', title: '期待回复',
     note: '结尾固定收束句。',
     items: [
-      { tag: '结尾', html: '<strong>Looking forward to</strong> your reply.' },
-      { tag: '结尾', html: 'We <strong>look forward to hearing from you</strong> soon.' }
+      { tag: '结尾', text: '<strong>Looking forward to</strong> your reply.' },
+      { tag: '结尾', text: 'We <strong>look forward to hearing from you</strong> soon.' }
     ]
   }
 ];
 
-let favorites = JSON.parse(localStorage.getItem('invitation_favs')) || {};
-
+// 渲染步骤
 function renderSteps() {
   const container = document.getElementById('stepsContainer');
   container.innerHTML = stepsData.map(step => `
@@ -379,27 +442,54 @@ function renderSteps() {
       <summary><span class="badge">${step.id.slice(1)}</span> ${step.title}</summary>
       <div class="content">
         <p class="note">${step.note}</p>
+        
         ${step.items.map((item, idx) => {
           const itemId = `${step.id}_${idx}`;
           const isStarred = favorites[itemId] ? 'active' : '';
           const starChar = favorites[itemId] ? '★' : '☆';
-          const hasSlot = item.html.includes('blank-slot');
+          const hasActions = item.actions && item.actions.length > 0;
           
+          // 给带有 data-slot 的 span 加上唯一 id (防止冲突)
+          let formattedText = item.text;
+          if (hasActions) {
+            formattedText = formattedText.replace(/data-slot="([^"]+)"/g, `data-slot="$1" id="${itemId}-$1"`);
+          }
+
+          let actionsHTML = '';
+          if (hasActions) {
+            actionsHTML = `<div class="action-row">
+              ${item.actions.map(act => `
+                <button class="action-btn" data-item="${itemId}" data-target="${itemId}-${act.target}" data-type="${act.type}">
+                  ${act.label} ▼
+                </button>
+              `).join('')}
+            </div>`;
+          }
+
           return `
-            <div class="item" id="item-${itemId}">
-              <span class="tag">${item.tag}</span>
-              <span class="en" onclick="toggleReveal(this)">${item.html}</span>
-              <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
+            <div class="sentence-block" id="block-${itemId}">
+              <div class="sentence-head">
+                <span class="tag">${item.tag}</span>
+                <span class="sentence-text" onclick="toggleReveal(this)">${formattedText}</span>
+                <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
+              </div>
+              ${actionsHTML}
             </div>
-            ${hasSlot ? `<div class="phrase-pool" id="pool-${itemId}"></div>` : ''}
           `;
         }).join('')}
+
+        <!-- 笔记区域 -->
+        <div class="note-area">
+          <div class="note-label">📝 我的笔记</div>
+          <textarea class="custom-note" data-id="${step.id}" placeholder="在此记录背诵技巧、易错点或补充素材...">${notesData[step.id] || ''}</textarea>
+        </div>
       </div>
     </details>
   `).join('');
   applyFilter();
 }
 
+// 渲染素材库
 function renderBank() {
   const grid = document.getElementById('bankGrid');
   grid.innerHTML = Object.entries(defaultBank).map(([cat, phrases], tIdx) => `
@@ -412,7 +502,7 @@ function renderBank() {
         return `
           <div class="phrase-item" id="item-${itemId}">
             <div style="flex:1;">
-              <span class="en" onclick="toggleReveal(this)">${phrase}</span>
+              <span class="sentence-text" style="line-height:1.4;" onclick="toggleReveal(this)">${phrase}</span>
             </div>
             <button class="star-btn ${isStarred}" data-id="${itemId}">${starChar}</button>
           </div>
@@ -423,16 +513,14 @@ function renderBank() {
   applyFilter();
 }
 
-// 模糊状态下点击解锁（移动端友好）
 window.toggleReveal = function(el) {
   if (document.body.classList.contains('masked')) {
     el.classList.toggle('revealed');
   }
 };
 
-// 统一事件管理
 document.addEventListener('click', function(e) {
-  // 1. 处理收藏
+  // 1. 收藏
   const starBtn = e.target.closest('.star-btn');
   if (starBtn) {
     const id = starBtn.dataset.id;
@@ -450,36 +538,54 @@ document.addEventListener('click', function(e) {
     return;
   }
 
-  // 2. 点击黄色虚线槽位 -> 弹出面板
-  const slot = e.target.closest('.blank-slot');
-  if (slot) {
+  // 2. 点击操作按钮展开/折叠面板
+  const actionBtn = e.target.closest('.action-btn');
+  if (actionBtn) {
     e.stopPropagation();
-    lastFocusedSlot = slot;
-    const item = slot.closest('.item');
-    const pool = item.nextElementSibling;
-
-    if (pool.classList.contains('show')) {
+    const itemId = actionBtn.dataset.item;
+    const targetId = actionBtn.dataset.target;
+    const type = actionBtn.dataset.type;
+    const block = document.getElementById(`block-${itemId}`);
+    
+    let pool = block.querySelector('.phrase-pool');
+    
+    // 如果已经展开且类型相同，则收起
+    if (pool && pool.classList.contains('show') && pool.dataset.type === type) {
       pool.classList.remove('show');
       return;
     }
 
+    // 关闭其他面板
     document.querySelectorAll('.phrase-pool').forEach(p => p.classList.remove('show'));
-    const type = slot.getAttribute('data-pool');
+    
+    // 创建或更新面板
+    if (!pool) {
+      pool = document.createElement('div');
+      pool.className = 'phrase-pool';
+      block.appendChild(pool);
+    }
+    
+    pool.dataset.type = type;
+    pool.dataset.target = targetId;
     pool.innerHTML = getPoolHTML(type);
     pool.classList.add('show');
     return;
   }
 
-  // 3. 点击药丸选项填入
+  // 3. 点击药丸选项填入变量框
   const pill = e.target.closest('.pill');
   if (pill && !e.target.classList.contains('pill-del')) {
     e.stopPropagation();
     const val = pill.getAttribute('data-value');
-    if (lastFocusedSlot) {
-      lastFocusedSlot.textContent = val;
-      lastFocusedSlot.classList.add('has-value');
-      lastFocusedSlot.closest('.item').nextElementSibling.classList.remove('show');
+    const pool = pill.closest('.phrase-pool');
+    const targetId = pool.dataset.target;
+    const targetEl = document.getElementById(targetId);
+    
+    if (targetEl) {
+      targetEl.textContent = val;
+      targetEl.classList.add('has-value');
     }
+    pool.classList.remove('show');
     return;
   }
 
@@ -494,11 +600,9 @@ document.addEventListener('click', function(e) {
       if (customPoolData[type].length === 0) delete customPoolData[type];
       saveCustomData();
       
-      // 重新渲染当前展开的面板
-      if(lastFocusedSlot) {
-        const pool = lastFocusedSlot.closest('.item').nextElementSibling;
-        pool.innerHTML = getPoolHTML(type);
-      }
+      // 重新渲染当前面板
+      const pool = delBtn.closest('.phrase-pool');
+      pool.innerHTML = getPoolHTML(type);
     }
     return;
   }
@@ -510,13 +614,13 @@ document.addEventListener('click', function(e) {
     return;
   }
 
-  // 6. 点击空白处关闭所有面板
-  if (!e.target.closest('.phrase-pool')) {
+  // 6. 点击外部关闭所有面板
+  if (!e.target.closest('.phrase-pool') && !e.target.closest('.action-btn')) {
     document.querySelectorAll('.phrase-pool').forEach(p => p.classList.remove('show'));
   }
 });
 
-// 监听表单提交（添加自定义词汇）
+// 监听表单提交 (添加自定义素材)
 document.addEventListener('submit', function(e) {
   if (e.target.classList.contains('custom-form')) {
     e.preventDefault();
@@ -524,28 +628,30 @@ document.addEventListener('submit', function(e) {
     const type = form.getAttribute('data-type');
     const input = form.querySelector('.custom-input');
     const val = input.value.trim();
+    const pool = form.closest('.phrase-pool');
     
     if (val) {
       if (!customPoolData[type]) customPoolData[type] = [];
-      // 防重复
       if (!customPoolData[type].includes(val) && !(defaultPool[type] && defaultPool[type].includes(val))) {
         customPoolData[type].push(val);
         saveCustomData();
       }
-      
-      // 重新渲染面板并清空输入框
-      if(lastFocusedSlot) {
-        const pool = lastFocusedSlot.closest('.item').nextElementSibling;
-        pool.innerHTML = getPoolHTML(type);
-      }
+      pool.innerHTML = getPoolHTML(type);
     }
   }
 });
 
-// 顶部开关逻辑
+// 监听笔记输入并保存
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('custom-note')) {
+    const id = e.target.getAttribute('data-id');
+    notesData[id] = e.target.value;
+    localStorage.setItem('invitation_notes', JSON.stringify(notesData));
+  }
+});
+
 document.getElementById('maskToggle').addEventListener('change', function(e) {
   document.body.classList.toggle('masked', e.target.checked);
-  // 关闭时清除所有已解锁状态
   if (!e.target.checked) {
     document.querySelectorAll('.revealed').forEach(el => el.classList.remove('revealed'));
   }
@@ -553,17 +659,24 @@ document.getElementById('maskToggle').addEventListener('change', function(e) {
 
 function applyFilter() {
   const showOnlyFav = document.getElementById('favToggle').checked;
-  const items = document.querySelectorAll('.item, .phrase-item');
+  const items = document.querySelectorAll('.sentence-block, .phrase-item');
   
   items.forEach(el => {
-    const id = el.getAttribute('id').replace('item-', '');
+    // 尝试获取对应 ID
+    let id = '';
+    if (el.classList.contains('sentence-block')) {
+      id = el.id.replace('block-', '');
+    } else {
+      id = el.id.replace('item-', '');
+    }
+    
     if (showOnlyFav && !favorites[id]) el.classList.add('is-hidden');
     else el.classList.remove('is-hidden');
   });
   
   document.querySelectorAll('details').forEach(details => {
     if (showOnlyFav) {
-      const hasVisible = details.querySelector('.item:not(.is-hidden), .phrase-item:not(.is-hidden)');
+      const hasVisible = details.querySelector('.sentence-block:not(.is-hidden), .phrase-item:not(.is-hidden)');
       details.open = !!hasVisible;
     }
   });
@@ -571,7 +684,6 @@ function applyFilter() {
 
 document.getElementById('favToggle').addEventListener('change', applyFilter);
 
-// 初始化
 renderSteps();
 renderBank();
 </script>
